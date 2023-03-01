@@ -1,19 +1,16 @@
 import { useState } from "react";
+import storage from "./storage";
 
 const useStorage = <T>(
   key: string,
   defaultValue: T
 ): [T, (value: T) => void] => {
   const [storeValue, setStoreValue] = useState<T>(() => {
-    const localValue = localStorage.getItem(key);
-    if (localValue) {
-      return JSON.parse(localValue);
-    }
-    return defaultValue;
+    return storage.get(key, defaultValue);
   });
 
   const _setStoreValue = (value: T) => {
-    localStorage.setItem(key, JSON.stringify(value));
+    storage.set(key, value);
     setStoreValue(value);
   };
 

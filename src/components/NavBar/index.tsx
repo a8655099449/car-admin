@@ -90,7 +90,7 @@ const NavBar: FC<IProps> = (): ReactElement => {
             <Menu>
               <Menu.Item key="name">
                 <IconUser />
-                {userInfo.acc}
+                {userInfo.name}
               </Menu.Item>
               <Menu.Item
                 key="logout"

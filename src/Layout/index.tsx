@@ -159,7 +159,7 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
     return nodes;
   }
 
-  if (!userInfo.acc) {
+  if (!userInfo.id) {
     Message.warning("请先进行登录");
     return <Redirect to={`/login?redirect=${pathname}`} />;
   }
@@ -168,13 +168,11 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
     <>
       <NavBar />
       <Layout className={`${styles["layout"]}`}>
-        {/* <SideBar routes={routes} /> */}
         <Sider collapsed={collapsed} className={`${styles["sider"]}`}>
           <Menu
             openKeys={openKeys}
             collapse={collapsed}
             onClickSubMenu={(key, openKeys) => {
-              // console.log("👴2022-02-09 16:14:15 index.tsx line:124", p);
               setOpenKeys(openKeys);
             }}
             selectedKeys={selectedKeys}

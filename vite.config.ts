@@ -28,5 +28,13 @@ export default ({ command }: ConfigEnv): UserConfigExport => ({
   },
   server: {
     port: 9996,
+    proxy: {
+      "/api": {
+        // target: "http://47.107.81.99:3000",
+        target: "http://localhost:3000/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
   },
 });

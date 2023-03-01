@@ -9,26 +9,9 @@ const routes: RouteItem[] = [
     name: "列表",
     children: [
       {
-        path: "/list/list1",
-        name: "列表1",
-        key: "list/list1",
-        children: [
-          {
-            name: "list2",
-            key: "list/list1/list2",
-          },
-          {
-            name: "list",
-            key: "list",
-          },
-        ],
-      },
-      {
-        name: "动态路由",
-        hideInMenu: true,
-        key: "list/listDetail",
-        path: "/list/listDetail/:id",
-        // auth: ["admin"],
+        path: "/list/user",
+        name: "用户列表",
+        key: "list/user",
       },
     ],
   },

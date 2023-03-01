@@ -1,6 +1,9 @@
 import { SETTING_KEY } from "@/config/localKeys";
 import useStorage from "@/utils/useStorage";
 import { useEffect, useState } from "react";
+
+
+// @ts-ignore
 import { generate, getRgbStr } from "@arco-design/color";
 
 

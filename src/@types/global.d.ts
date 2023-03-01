@@ -7,11 +7,12 @@ type Locale = {
 };
 
 type UserInfo = {
-  acc?: string;
-  pwd?: string;
+  account?: string;
+  password?: string;
   auth?: string[];
   remember?: boolean;
   name?: string;
+  id?: number;
 };
 type SettingOptions = {
   themeColor: string;
