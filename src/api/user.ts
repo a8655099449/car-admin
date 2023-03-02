@@ -20,9 +20,9 @@ export const loginApi = (data: any) =>
     data,
   });
 
-export const userListAPI = (data: any) =>
-  request<Login>({
+export const userListAPI = (query: any) =>
+  request<Pagination<UserInfo>>({
     url: "/user/list",
-    method: "post",
-    data,
+    method: "get",
+    params: query,
   });

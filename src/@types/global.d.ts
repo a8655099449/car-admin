@@ -20,3 +20,10 @@ type SettingOptions = {
   theme: "dark" | "light";
   collapsed: boolean;
 };
+interface Pagination<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
