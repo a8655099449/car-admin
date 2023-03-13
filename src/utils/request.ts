@@ -2,6 +2,7 @@ import { Message } from "@arco-design/web-react";
 import axios from "axios";
 
 import type { AxiosRequestConfig } from "axios";
+import storage from "./storage";
 const baseURL = `/api`;
 function request<T = any>(
   config: AxiosRequestConfig & {
@@ -31,6 +32,9 @@ function request<T = any>(
         config.params = {};
       }
       config.params.timerstamp = Date.now();
+
+      const { headers = {} } = config;
+      headers["Authorization"] = storage.get("token");
 
       return config;
     },

@@ -124,7 +124,7 @@ export const createStorage = ({ prefixKey = '', storage = localStorage } = {}) =
 
 const storage = createStorage({
   prefixKey: 'sofa-',
-  storage: sessionStorage,
+  storage: localStorage,
 });
 
 export default storage;

@@ -45,10 +45,8 @@ export default function login() {
     value.password = md5(value.password)
     const res = await loginApi(value).finally(() => setLoading(false))
     if (res.code === 200) {
-
       const { token, user } = res.data
       loginSuccess(user)
-
       storage.set('token', token)
     }
   };
