@@ -58,7 +58,7 @@ export default function login() {
     Message.success("登录成功");
   };
 
-  const [status, setStatus] = useState(0);
+  const [status, setStatus] = useState(1);
 
 
   const required = true;

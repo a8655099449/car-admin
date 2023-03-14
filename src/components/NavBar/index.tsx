@@ -112,6 +112,7 @@ const NavBar: FC<IProps> = (): ReactElement => {
             </Menu>
           }
           position="br"
+          trigger={'click'}
         >
           <IconButton
             icon={<IconUser />}

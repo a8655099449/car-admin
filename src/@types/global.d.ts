@@ -13,6 +13,7 @@ type UserInfo = {
   remember?: boolean;
   name?: string;
   id?: number;
+  email?: string;
 };
 type SettingOptions = {
   themeColor: string;

@@ -26,3 +26,9 @@ export const userListAPI = (query: any) =>
     method: "get",
     params: query,
   });
+export const getMailCode = (email: string) =>
+  request<Pagination<UserInfo>>({
+    url: "/user/list",
+    method: "post",
+    data: { email },
+  });

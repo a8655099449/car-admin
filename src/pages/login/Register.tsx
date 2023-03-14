@@ -1,10 +1,13 @@
 import { Button, Form, Input, Message } from '@arco-design/web-react';
-import { IconApps, IconIdcard, IconLock, IconUser } from '@arco-design/web-react/icon';
+import { IconApps, IconCode, IconCodeBlock, IconCodepen, IconEmail, IconIdcard, IconLock, IconUser } from '@arco-design/web-react/icon';
 import { FC, ReactElement, useRef } from 'react';
 
 import { useRequest } from 'ahooks'
 import to from '@/utils/to';
-import { registerApi } from '@/api/user';
+import { getMailCode, registerApi } from '@/api/user';
+
+import styles from './index.module.less';
+
 
 
 type RegisterProps = {
@@ -28,6 +31,28 @@ const Register: FC<RegisterProps> = ({ back }): ReactElement => {
   }, {
     manual: true
   })
+
+  // todo: 获取邮箱验证码
+  const { run: getCode, loading: codeLoading } = useRequest(async () => {
+
+    const mail = form.getFieldValue('email')
+    if (!mail) {
+      Message.warning('请输入邮箱')
+      return
+    }
+    const [err] = await to(getMailCode(mail as string))
+    if (!err) {
+      Message.success('验证码已发送')
+    }
+
+
+
+  }, {
+    manual: true
+  })
+
+
+
 
 
   return <div>
@@ -75,6 +100,59 @@ const Register: FC<RegisterProps> = ({ back }): ReactElement => {
           autoComplete="off"
         />
       </Form.Item>
+
+
+      <Form.Item
+        field="email"
+        required
+        rules={[
+          {
+            required,
+            message: "邮箱格式错误",
+
+          },
+        ]}
+      >
+        <Input
+          type="text"
+          placeholder="输入您的邮箱"
+          required
+          prefix={<IconEmail />}
+          autoComplete="off"
+        />
+      </Form.Item>
+
+      <div className={`${styles['code-bar']}`}>
+        <Form.Item
+          field="code"
+          required
+          rules={[
+            {
+              required,
+              message: "账号格式错误",
+            },
+          ]}
+        >
+          <Input
+            type="text"
+            placeholder="邮箱验证码"
+            required
+            prefix={<IconCodepen />}
+            autoComplete="off"
+          />
+        </Form.Item>
+        <Button
+          style={{
+            width: 100,
+            marginLeft: 10
+          }}
+          onClick={getCode}
+          loading={codeLoading}
+        >
+          获取验证码
+        </Button>
+      </div>
+
       <Form.Item
         field="password"
         required
