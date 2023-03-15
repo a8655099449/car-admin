@@ -36,6 +36,8 @@ const Register: FC<RegisterProps> = ({ back }): ReactElement => {
   const { run: getCode, loading: codeLoading } = useRequest(async () => {
 
     const mail = form.getFieldValue('email')
+    console.log('👴2023-03-15 17:40:46 Register.tsx line:39', mail)
+
     if (!mail) {
       Message.warning('请输入邮箱')
       return
@@ -44,8 +46,6 @@ const Register: FC<RegisterProps> = ({ back }): ReactElement => {
     if (!err) {
       Message.success('验证码已发送')
     }
-
-
 
   }, {
     manual: true
@@ -114,7 +114,7 @@ const Register: FC<RegisterProps> = ({ back }): ReactElement => {
         ]}
       >
         <Input
-          type="text"
+          type='email'
           placeholder="输入您的邮箱"
           required
           prefix={<IconEmail />}
