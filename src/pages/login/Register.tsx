@@ -36,7 +36,6 @@ const Register: FC<RegisterProps> = ({ back }): ReactElement => {
   const { run: getCode, loading: codeLoading } = useRequest(async () => {
 
     const mail = form.getFieldValue('email')
-    console.log('👴2023-03-15 17:40:46 Register.tsx line:39', mail)
 
     if (!mail) {
       Message.warning('请输入邮箱')

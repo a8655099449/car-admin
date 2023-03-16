@@ -41,7 +41,7 @@ const UserList: FC<UserListProps> = (): ReactElement => {
       ]}
       rowKey={`id`}
       pagination={{
-        pageSize: 5,
+        pageSize: 10,
         current: 1
       }}
     />

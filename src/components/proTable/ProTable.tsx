@@ -43,6 +43,10 @@ function ProTable<T = any>(props: ProTableProps<T>): ReactElement {
     <SearchBar<T> {...props}
       onSearch={e => {
         ref.current.searchValues = e
+        ref.current.pagination.current = 1
+        set_Pagination({
+          current: 1,
+        })
         run()
       }}
     />

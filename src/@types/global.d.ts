@@ -28,3 +28,22 @@ interface Pagination<T> {
   pageSize: number;
   totalPages: number;
 }
+
+/**
+ * @name CarItem 车辆信息
+ * @description 车辆信息 包含 盘点时间 车型 主流型号 指导价格 价优惠行情价格 裸车价格 保险 购置税 落地行情价
+ */
+
+type CarItem = {
+  id: number;
+  inventoryTime: string; // 盘点时间
+  brand: string; // 品牌
+  saleCount: number; // 销量
+  model: string; // 型号
+  guidePrice: number; // 指导价
+  discount: number; // 优惠行情价
+  nakedPrice: number; // 裸车价
+  insurance: number; // 保险
+  purchaseTax: number; // 购置税
+  landingPrice: number; // 落地行情价
+};

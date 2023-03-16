@@ -13,6 +13,11 @@ const routes: RouteItem[] = [
         name: "用户列表",
         key: "list/user",
       },
+      {
+        path: "/list/car",
+        name: "百车盘点",
+        key: "list/car",
+      },
     ],
   },
   {
