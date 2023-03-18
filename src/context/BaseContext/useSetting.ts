@@ -25,7 +25,7 @@ export const setColorVar = (color: string) => {
 const defaultSetting: SettingOptions = {
   themeColor: "#165DFF",
   lang: "zh-CN",
-  theme: "dark",
+  theme: 'light',
   collapsed:false
 };
 

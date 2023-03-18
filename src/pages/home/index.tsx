@@ -1,17 +1,10 @@
-import lazyload from '@/components/lazyload';
-import React, { FC, ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
-interface IProps {}
-const index: FC<IProps> = (): ReactElement => {
-
-   // const List =  lazyload(`./pages/list/index.tsx`)
-
-   return <div>
-      {
-         Array(1000).fill('').map((_,i)=><li key={i}>{i}</li>)
-
-      }
-   </div>;
+type HomePageProps = any
+const HomePage: FC<HomePageProps> = (): ReactElement => {
+    return <div>
+      <h1>welcome</h1>
+    </div>;
 };
 
-export default index;
+export default HomePage;

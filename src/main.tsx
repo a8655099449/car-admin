@@ -6,6 +6,7 @@ import "@arco-design/web-react/dist/css/arco.css";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import BaseContext from "./context/BaseContext";
 import login from "./pages/login";
+import exportPage from "./pages/export";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <BaseContext>
         <Switch>
           <Route path={`/login`} component={login} />
+          <Route path={`/export`} component={exportPage} />
           <Route path={`/`} component={BaseLayout}></Route>
         </Switch>
       </BaseContext>

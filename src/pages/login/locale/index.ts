@@ -1,6 +1,8 @@
 const i18n: Locale = {
   "en-US": {
-    "login.title": "login",
+    "users.login": {
+      "login": "login",
+    },
   },
   "zh-CN": {
     "login.title": "登录",

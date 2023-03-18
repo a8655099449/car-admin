@@ -2,7 +2,7 @@ type Lang = "zh-CN" | "en-US";
 
 type Locale = {
   [k in Lang]: {
-    [key in string]: string;
+    [key in string]: any;
   };
 };
 
