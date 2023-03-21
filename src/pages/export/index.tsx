@@ -1,9 +1,9 @@
-import { downloadFile } from '@/utils';
-import { Button, Input, Table } from '@arco-design/web-react';
-import  { FC, ReactElement, useMemo, useState } from 'react';
+import { copy2Clipboard, downloadFile } from '@/utils';
+import { Button, Input, Message, Table } from '@arco-design/web-react';
+import { FC, ReactElement, useMemo, useState } from 'react';
 
 interface IProps { }
-const index: FC<IProps> = (): ReactElement => {
+const ExportPage: FC<IProps> = (): ReactElement => {
 
    // const List =  lazyload(`./pages/list/index.tsx`)
    const [text, setText] = useState(`/marketingCenter/marketing/travelCard	出行卡管理	Travel card management
@@ -43,8 +43,8 @@ const index: FC<IProps> = (): ReactElement => {
       const rows = text.split('\n')
 
       const items = rows.map(item => {
-         const [model, zh, en] = item.split('\t').map(i => i.trim())
-         return { model, en, zh }
+         const [model, zh, en, other] = item.split('\t').map(i => i.trim())
+         return { model, en: other || en, zh }
 
       })
 
@@ -52,7 +52,7 @@ const index: FC<IProps> = (): ReactElement => {
 
    }, [text])
 
-   const handleExport = () => {
+   const handleExport = (t = 'download') => {
       const map: any = {}
 
       const enMap = {
@@ -84,14 +84,27 @@ const index: FC<IProps> = (): ReactElement => {
       })
 
       const fileContext = JSON.stringify(enMap, null, 2)
+      if (t === 'copy') {
+         copy2Clipboard(fileContext)
+         Message.success('复制成功')
+         return
+      }
+
       downloadFile('local.json', fileContext,)
    }
 
 
-   return <div>
-      <Button onClick={handleExport} type='primary' style={{
-         marginBottom: 10
+
+
+
+   return <div style={{ padding: 10 }}>
+      <Button onClick={() => handleExport()} type='primary' style={{
+         marginBottom: 10,
+         marginRight: 10
       }}>导出</Button>
+      <Button onClick={() => handleExport('copy')} type='primary' style={{
+         marginBottom: 10
+      }}>复制</Button>
 
       <Input.TextArea
          style={{
@@ -125,4 +138,4 @@ const index: FC<IProps> = (): ReactElement => {
    </div>;
 };
 
-export default index;
+export default ExportPage;

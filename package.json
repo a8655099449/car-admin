@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "load": "scp -o \"StrictHostKeyChecking=no\" -r  ./dist/* root@47.107.81.99:/www/wwwroot/car.woai996.com/"
+    "load": "npm run build && scp -o \"StrictHostKeyChecking=no\" -r  ./dist/* root@47.107.81.99:/www/wwwroot/car.woai996.com/"
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
