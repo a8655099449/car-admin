@@ -20,20 +20,7 @@ const routes: RouteItem[] = [
       },
     ],
   },
-  {
-    name: "动态路由",
-    key: "profile/a",
-  },
-  {
-    name: "权限控制",
-    key: "profile/b",
-    auth: ["admin"],
-  },
-  {
-    name: "表格",
-    key: "table",
-    auth: ["admin"],
-  },
+ 
 ];
 
 export default routes;

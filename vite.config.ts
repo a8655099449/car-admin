@@ -35,6 +35,16 @@ export default ({ command }: ConfigEnv): UserConfigExport => ({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
+      "/oss": {
+        target: "http://zugcpublish.cztv.com/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/oss/, ""),
+      },
+      "/loadOss": {
+        target: "https://zjs-ugc.oss-cn-hangzhou.aliyuncs.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/loadOss/, ""),
+      },
     },
   },
 });

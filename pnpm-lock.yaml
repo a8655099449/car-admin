@@ -4,6 +4,7 @@ specifiers:
   '@arco-design/color': ^0.4.0
   '@arco-design/web-react': ^2.28.2
   '@loadable/component': ^5.15.2
+  '@types/crypto-js': ^4.1.1
   '@types/react': ^17.0.33
   '@types/react-color': ^3.0.6
   '@types/react-dom': ^17.0.10
@@ -36,6 +37,7 @@ dependencies:
   react-router-dom: 5.2.0_react@17.0.2
 
 devDependencies:
+  '@types/crypto-js': 4.1.1
   '@types/react': 17.0.53
   '@types/react-color': 3.0.6
   '@types/react-dom': 17.0.19
@@ -476,6 +478,10 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.1
+    dev: true
+
+  /@types/crypto-js/4.1.1:
+    resolution: {integrity: sha512-BG7fQKZ689HIoc5h+6D2Dgq1fABRa0RbBWKBd9SP/MVRVXROflpm5fhwyATX5duFmbStzyzyycPB8qUYKDH3NA==}
     dev: true
 
   /@types/estree/0.0.39:

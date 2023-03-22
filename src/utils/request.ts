@@ -53,7 +53,7 @@ function request<T = any>(
       return res.data;
     },
     (err) => {
-      const msg = err.response?.data?.message;
+      const msg = err.response?.data?.message || "服务器错误";
       Message.error(msg);
 
       return Promise.reject(err?.response?.data || err);
