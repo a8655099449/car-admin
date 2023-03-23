@@ -1,14 +1,11 @@
-import { getContext } from "@/context/BaseContext";
+import { getContext } from '@/context/BaseContext';
 
-
-
-const useLocale = (locale:Locale) => {
+const useLocale = (locale: Locale) => {
   const { setting } = getContext();
 
-  const { lang = "zh-CN" } = setting || {};
+  const { lang = 'zh-CN' } = setting || {};
 
-  return locale[lang]
-
+  return locale[lang];
 };
 
 export default useLocale;

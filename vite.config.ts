@@ -1,18 +1,16 @@
-import { defineConfig, UserConfigExport, ConfigEnv } from "vite";
-import react from "@vitejs/plugin-react";
-
+import react from '@vitejs/plugin-react';
 // visualizer是 打包大小分析工具，执行build命令后，会在根目录生成 stats.html文件，可以打开分析项目文件大小
-import visualizer from "rollup-plugin-visualizer";
-
-import { viteMockServe } from "vite-plugin-mock";
+import visualizer from 'rollup-plugin-visualizer';
+import { ConfigEnv, defineConfig, UserConfigExport } from 'vite';
+import { viteMockServe } from 'vite-plugin-mock';
 
 export default ({ command }: ConfigEnv): UserConfigExport => ({
   plugins: [
     react(),
     visualizer(),
     viteMockServe({
-      mockPath: "/src/mock",
-      localEnabled: command === "serve",
+      mockPath: '/src/mock',
+      localEnabled: command === 'serve',
     }),
   ],
   css: {
@@ -24,26 +22,26 @@ export default ({ command }: ConfigEnv): UserConfigExport => ({
     },
   },
   resolve: {
-    alias: [{ find: "@", replacement: "/src" }],
+    alias: [{ find: '@', replacement: '/src' }],
   },
   server: {
     port: 9996,
     proxy: {
-      "/api": {
+      '/api': {
         // target: "http://47.107.81.99:3000",
-        target: "http://localhost:3000/",
+        target: 'http://localhost:3000/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      "/oss": {
-        target: "http://zugcpublish.cztv.com/",
+      '/oss': {
+        target: 'http://zugcpublish.cztv.com/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/oss/, ""),
+        rewrite: (path) => path.replace(/^\/oss/, ''),
       },
-      "/loadOss": {
-        target: "https://zjs-ugc.oss-cn-hangzhou.aliyuncs.com",
+      '/loadOss': {
+        target: 'https://zjs-ugc.oss-cn-hangzhou.aliyuncs.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/loadOss/, ""),
+        rewrite: (path) => path.replace(/^\/loadOss/, ''),
       },
     },
   },

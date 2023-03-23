@@ -1,13 +1,13 @@
-import { Message } from "@arco-design/web-react";
-import axios from "axios";
+import { Message } from '@arco-design/web-react';
+import type { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
-import type { AxiosRequestConfig } from "axios";
-import storage from "./storage";
+import storage from './storage';
 const baseURL = `/api`;
 function request<T = any>(
   config: AxiosRequestConfig & {
     cacheTime?: number; // 缓存时间 , 默认都有一分钟的缓存，如果不要缓存则写0
-  }
+  },
 ): Promise<
   {
     code: number;
@@ -20,7 +20,7 @@ function request<T = any>(
     baseURL: baseURL,
     // 网络请求时间超时会自动断开
     timeout: 10000,
-    method: "get",
+    method: 'get',
     withCredentials: true,
   });
 
@@ -34,30 +34,27 @@ function request<T = any>(
       config.params.timerstamp = Date.now();
 
       const { headers = {} } = config;
-      headers["Authorization"] = storage.get("token");
+      headers['Authorization'] = storage.get('token');
 
       return config;
     },
     // 请求错误前的拦截
     (error) => {
       return Promise.reject(error?.response);
-    }
+    },
   );
 
   // ! 响应拦截
   instance.interceptors.response.use(
     (res) => {
-      if (res.data?.code === 200) {
-      }
-
       return res.data;
     },
     (err) => {
-      const msg = err.response?.data?.message || "服务器错误";
+      const msg = err.response?.data?.message || '服务器错误';
       Message.error(msg);
 
       return Promise.reject(err?.response?.data || err);
-    }
+    },
   );
 
   return instance(config) as any;

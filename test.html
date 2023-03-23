@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>文件上传</title>
+  </head>
+  <body>
+    <div>
+      <input type="file" id="file" />
+
+      <button id="upload">上传文件</button>
+    </div>
+  </body>
+
+  <script src="js/jquery-1.10.2.min.js"></script>
+  <script>
+    var filename = '';
+    var file = null;
+    $('#file').change(function () {
+      let f = document.getElementById('file').files[0];
+      if (typeof f != 'undefined') {
+        let src = window.URL.createObjectURL(f);
+        if (src === null || src === '') {
+          return;
+        }
+        filename = f.name;
+        file = f;
+      }
+    });
+
+    $('#upload').click(function () {
+      let data = getPolicy();
+      var formData = new FormData();
+      formData.append('OSSAccessKeyId', data.OSSAccessKeyId);
+      formData.append('signature', data.signature);
+      formData.append('policy', data.policy);
+      formData.append('key', data.dir + new Date().valueOf() + filename); //注意顺序，file要在key的后面。不然会返回找不到key 的错误
+      formData.append('file', file);
+      formData.append('success_action_status', 200);
+      $.ajax({
+        url: data.host,
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data, status, response) {
+          if (status === 'success') {
+            alert('上传成功！');
+          }
+        },
+        error: function (e) {
+          alert('上传失败！');
+          console.log('失败', e);
+        },
+      });
+    });
+
+    function getPolicy() {
+      var restultData = null;
+      $.ajax({
+        url: 'http://localhost:8080/getPolicy',
+        type: 'GET',
+        async: false,
+        success: function (data, status, request) {
+          if (status === 'success') {
+            restultData = data;
+          }
+        },
+        error: function (e) {
+          console.log('失败', e);
+        },
+      });
+      return restultData;
+    }
+  </script>
+</html>
