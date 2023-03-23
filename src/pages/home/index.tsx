@@ -31,42 +31,44 @@ type HomePageProps = any;
 const handleUpload = async (file: UploadItem, oss: Oss) => {
   const res1 = await request<Oss>({
     method: 'GET',
-    baseURL: '/oss',
-    url: `/dasugc/v1/api/v1/oss/token`,
+    url: `/file/sts`,
   });
 
-  const { AccessKeyId, AccessKeySecret, SecurityToken } = res1.data.ugc.ossToken.data;
+  // const { AccessKeyId, AccessKeySecret, SecurityToken } = res1.data.ugc.ossToken.data;
 
   const { originFile, name } = file;
-  const date = new Date();
-  date.setHours(date.getHours() + 1);
-  date.setHours(date.getHours() + 1);
-  const policyText = {
-    expiration: date.toISOString(), // 设置policy过期时间。
-    conditions: [
-      // 限制上传大小。
-      ['content-length-range', 0, 1024 * 1024 * 1024 * 10],
-    ],
-  };
-  const policy = CryptoJS.enc.Base64.stringify(
-    CryptoJS.enc.Utf8.parse(JSON.stringify(policyText)),
-  );
+  // const date = new Date();
+  // date.setHours(date.getHours() + 1);
+  // const policyText = {
+  //   expiration: date.toISOString(), // 设置policy过期时间。
+  //   conditions: [
+  //     // 限制上传大小。
+  //     ['content-length-range', 0, 1024 * 1024 * 1024 * 10],
+  //   ],
+  // };
+  // const policy = CryptoJS.enc.Base64.stringify(
+  //   CryptoJS.enc.Utf8.parse(JSON.stringify(policyText)),
+  // );
 
-  console.log(policy);
-  console.log(AccessKeySecret);
+  // console.log(policy);
+  // console.log(AccessKeySecret);
 
-  const signature = CryptoJS.enc.Base64.stringify(
-    CryptoJS.HmacSHA1(AccessKeySecret, policy),
-  );
+  // const signature = CryptoJS.enc.Base64.stringify(
+  //   CryptoJS.HmacSHA1(AccessKeySecret, policy),
+  // );
 
+  // const params = {
+  //   key: '/home',
+  //   policy,
+  //   signature,
+  //   OSSAccessKeyId: AccessKeyId,
+  //   success_action_status: 200,
+  //   name,
+  //   'x-oss-security-token': SecurityToken,
+  // };
   const params = {
-    key: '',
-    policy,
-    signature,
-    OSSAccessKeyId: AccessKeyId,
-    success_action_status: 200,
-    name,
-    'x-oss-security-token': SecurityToken,
+    key: '/home',
+    ...res1.data,
   };
 
   const formData = new FormData();
@@ -84,23 +86,25 @@ const handleUpload = async (file: UploadItem, oss: Oss) => {
       'Content-Type': 'multipart/form-data',
     },
   });
-
   console.log('👴2023-03-22 11:15:05 index.tsx line:76', res);
 };
 
 const HomePage: FC<HomePageProps> = (): ReactElement => {
-  const { data } = useRequest(async () => {
-    const res = await request<Oss>({
-      method: 'GET',
-      baseURL: '/oss',
-      url: `/dasugc/v1/api/v1/oss/token`,
-    });
-    return res;
-  });
+  const { data } = useRequest(
+    async () => {
+      const res = await request<Oss>({
+        method: 'GET',
+        baseURL: '/oss',
+        url: `/dasugc/v1/api/v1/oss/token`,
+      });
+      return res;
+    },
+    {
+      manual: true,
+    },
+  );
 
   const [file, setFile] = useState<UploadItem[]>([]);
-
-  console.log('👴', CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA1('aaa', 'bbb')));
 
   return (
     <div>
