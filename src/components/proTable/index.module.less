@@ -1,22 +1,52 @@
 .search-bar {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+
+  &.row-1{
+    justify-content: space-between;
+  }
+  &.row-0{
+
+    justify-content: flex-end;
+
+
+  }
+  .row-3{}
+
+  
 
   .search-item {
     padding-right: 20px;
     // flex: ;
     width: calc(100% / 3);
 
-    :global {
-      .arco-form-label-item {
-        width: auto;
-        flex: none;
-
-      }
-      .arco-form-item-wrapper {
-        width: auto;
-        flex: 1;
-      }
+    &.button-wrap {
+      text-align: right;
+      margin-bottom: 20px;
     }
+    &.hide {
+      display: none;
+      // text-align: right;
+    }
+    // :global {
+    //   .arco-form-label-item {
+    //     width: auto;
+    //     flex: none;
+
+    //   }
+    //   .arco-form-item-wrapper {
+    //     width: auto;
+    //     flex: 1;
+    //   }
+    // }
   }
+}
+.toolbar{
+  display: flex;
+  justify-content: space-between;
+  margin: 10px auto;
+}
+.pro-table{
+  padding: 10px;
 }

@@ -1,8 +1,8 @@
-type Lang = "zh-CN" | "en-US";
+type Lang = 'zh-CN' | 'en-US';
 
 type Locale = {
   [k in Lang]: {
-    [key in string]: any;
+    [key in string]: unknown;
   };
 };
 
@@ -18,7 +18,7 @@ type UserInfo = {
 type SettingOptions = {
   themeColor: string;
   lang: Lang;
-  theme: "dark" | "light";
+  theme: 'dark' | 'light';
   collapsed: boolean;
 };
 interface Pagination<T> {

@@ -1,72 +1,58 @@
-import { Layout, Menu, Message } from "@arco-design/web-react";
-import React, {
-  FC,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Layout, Menu, Message } from '@arco-design/web-react';
+import React, { FC, ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
-interface IProps {}
-import {
-  Link,
-  Redirect,
-  Route,
-  Switch,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
-import styles from "./layout.module.less";
+import styles from './layout.module.less';
 
 const { Sider, Content } = Layout;
 const { Item: MenuItem, SubMenu } = Menu;
 import {
-  IconDashboard,
-  IconList,
-  IconSettings,
-  IconFile,
   IconApps,
   IconCheckCircle,
+  IconDashboard,
   IconExclamationCircle,
-  IconUser,
+  IconFile,
+  IconList,
   IconMenuFold,
   IconMenuUnfold,
-} from "@arco-design/web-react/icon";
-import routes from "../config/routes";
-import getFlattenRoutes from "./loadRoute";
-import NavBar from "@/components/NavBar";
-// import{  } from "./components/BaseContext";
+  IconSettings,
+  IconUser,
+} from '@arco-design/web-react/icon';
 
-import lazyload from "@/components/lazyload";
-import { getContext } from "@/context/BaseContext";
-import Auth from "./components/Auth";
+// import{  } from "./components/BaseContext";
+import lazyload from '@/components/lazyload';
+import NavBar from '@/components/NavBar';
+import { getContext } from '@/context/BaseContext';
+
+import routes from '../config/routes';
+import Auth from './components/Auth';
+import getFlattenRoutes from './loadRoute';
 
 const isArray = Array.isArray;
 function getIconFromKey(key) {
   switch (key) {
-    case "home":
+    case 'home':
       return <IconDashboard />;
-    case "list":
+    case 'list':
       return <IconList />;
-    case "form":
+    case 'form':
       return <IconSettings />;
-    case "profile":
+    case 'profile':
       return <IconFile />;
-    case "visualization":
+    case 'visualization':
       return <IconApps />;
-    case "result":
+    case 'result':
       return <IconCheckCircle />;
-    case "exception":
+    case 'exception':
       return <IconExclamationCircle />;
-    case "user":
+    case 'user':
       return <IconUser />;
     default:
       return <IconUser />;
   }
 }
 
-const BaseLayout: FC<IProps> = (): ReactElement => {
+const BaseLayout = (): ReactElement => {
   const _routes = useMemo<RouteItem[]>(() => {
     return getFlattenRoutes(routes);
   }, []);
@@ -84,18 +70,14 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
   const [openKeys, setOpenKeys] = useState<string[]>([]);
 
   useEffect(() => {
-    const _key = pathname.replace(/^\//, "");
+    const _key = pathname.replace(/^\//, '');
     setSelectedKeys([_key]);
   }, [pathname]);
 
   function renderRoutes() {
     routeMap.current.clear();
     const nodes: any[] = [];
-    function travel(
-      _routes: RouteItem[],
-      level: number,
-      parentNode: any[] = []
-    ) {
+    function travel(_routes: RouteItem[], level: number, parentNode: any[] = []) {
       return _routes.map((route) => {
         const { breadcrumb = true, hideInMenu, auth } = route;
         if (hideInMenu) return null;
@@ -117,7 +99,7 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
         ) {
           routeMap.current.set(
             `/${route.key}`,
-            breadcrumb ? [...parentNode, route.name] : []
+            breadcrumb ? [...parentNode, route.name] : [],
           );
 
           if (level > 1) {
@@ -130,7 +112,7 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
           nodes.push(
             <MenuItem key={route.key}>
               <Link to={`/${route.key}`}>{titleDom}</Link>
-            </MenuItem>
+            </MenuItem>,
           );
         }
         if (isArray(route.children) && route.children.length) {
@@ -149,7 +131,7 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
           nodes.push(
             <SubMenu key={route.key} title={titleDom}>
               {travel(route.children, level + 1, [...parentNode, route.name])}
-            </SubMenu>
+            </SubMenu>,
           );
         }
       });
@@ -159,15 +141,15 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
   }
 
   if (!userInfo.id) {
-    Message.warning("请先进行登录");
+    Message.warning('请先进行登录');
     return <Redirect to={`/login?redirect=${pathname}`} />;
   }
 
   return (
     <>
       <NavBar />
-      <Layout className={`${styles["layout"]}`}>
-        <Sider collapsed={collapsed} className={`${styles["sider"]}`}>
+      <Layout className={`${styles['layout']}`}>
+        <Sider collapsed={collapsed} className={`${styles['sider']}`}>
           <Menu
             openKeys={openKeys}
             collapse={collapsed}
@@ -178,30 +160,25 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
           >
             {renderRoutes()}
           </Menu>
-          <div
-            className={`${styles["collapsed-btn"]}`}
+          <button
+            className={`${styles['collapsed-btn']}`}
             onClick={() => setSetting({ ...setting, collapsed: !collapsed })}
           >
             {collapsed ? <IconMenuUnfold /> : <IconMenuFold />}
-          </div>
+          </button>
         </Sider>
 
         <Content
           style={{
             backgroundColor: `var(--color-bg-3)`,
-            padding: 10,
+            padding: 16,
           }}
         >
           <Auth>
             <Switch>
               {_routes.map(({ component, key, path }) => {
                 return (
-                  <Route
-                    key={key}
-                    path={path || `/${key}`}
-                    component={component}
-                    exact
-                  />
+                  <Route key={key} path={path || `/${key}`} component={component} exact />
                 );
               })}
 
@@ -209,11 +186,7 @@ const BaseLayout: FC<IProps> = (): ReactElement => {
                 <Redirect to={`/home`} />
               </Route>
 
-              <Route
-                exact
-                path="*"
-                component={lazyload(() => import(`../pages/404`))}
-              ></Route>
+              <Route exact path="*" component={lazyload(() => import(`../pages/404`))} />
             </Switch>
           </Auth>
         </Content>

@@ -1,13 +1,11 @@
-import lazyload from "../components/lazyload";
+import lazyload from '../components/lazyload';
 
 function getFlattenRoutes(routes: RouteItem[]): any {
-
-  const mod = import.meta.glob("../pages/**/[a-z[]*.tsx");
+  const mod = import.meta.glob('../pages/**/[a-z[]*.tsx');
   const res: any[] = [];
 
   function travel(_routes: RouteItem[]) {
     _routes.forEach((route) => {
-
       if (route.key && !route.children) {
         route.component = lazyload(mod[`../pages/${route.key}/index.tsx`]);
         res.push(route);

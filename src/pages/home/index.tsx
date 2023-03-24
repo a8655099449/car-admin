@@ -28,47 +28,19 @@ interface Data {
 
 type HomePageProps = any;
 
-const handleUpload = async (file: UploadItem, oss: Oss) => {
-  const res1 = await request<Oss>({
+const handleUpload = async (file: UploadItem) => {
+  const { data } = await request<any>({
     method: 'GET',
-    url: `/file/sts`,
+    url: `/file/ossSign`,
   });
 
-  // const { AccessKeyId, AccessKeySecret, SecurityToken } = res1.data.ugc.ossToken.data;
-
   const { originFile, name } = file;
-  // const date = new Date();
-  // date.setHours(date.getHours() + 1);
-  // const policyText = {
-  //   expiration: date.toISOString(), // 设置policy过期时间。
-  //   conditions: [
-  //     // 限制上传大小。
-  //     ['content-length-range', 0, 1024 * 1024 * 1024 * 10],
-  //   ],
-  // };
-  // const policy = CryptoJS.enc.Base64.stringify(
-  //   CryptoJS.enc.Utf8.parse(JSON.stringify(policyText)),
-  // );
 
-  // console.log(policy);
-  // console.log(AccessKeySecret);
-
-  // const signature = CryptoJS.enc.Base64.stringify(
-  //   CryptoJS.HmacSHA1(AccessKeySecret, policy),
-  // );
-
-  // const params = {
-  //   key: '/home',
-  //   policy,
-  //   signature,
-  //   OSSAccessKeyId: AccessKeyId,
-  //   success_action_status: 200,
-  //   name,
-  //   'x-oss-security-token': SecurityToken,
-  // };
   const params = {
-    key: '/home',
-    ...res1.data,
+    key: 'test/' + name,
+    success_action_status: 200,
+    host: 'https://zjs-ugc.oss-cn-hangzhou.aliyuncs.com',
+    ...data,
   };
 
   const formData = new FormData();
@@ -86,7 +58,8 @@ const handleUpload = async (file: UploadItem, oss: Oss) => {
       'Content-Type': 'multipart/form-data',
     },
   });
-  console.log('👴2023-03-22 11:15:05 index.tsx line:76', res);
+
+  return params.host + '/' + params.key;
 };
 
 const HomePage: FC<HomePageProps> = (): ReactElement => {
@@ -111,13 +84,13 @@ const HomePage: FC<HomePageProps> = (): ReactElement => {
       <h1>welcome</h1>
       <Upload
         onChange={(file) => {
-          setFile(file);
+          console.log('👴2023-03-24 14:38:39 index.tsx line:87', file);
+          // setFile(file);
         }}
-        limit={2}
-        fileList={file}
+        directory // 上传文件夹
       />
       <Button
-        onClick={() => handleUpload(file[0], data?.data as Oss)}
+        onClick={() => handleUpload(file[0])}
         style={{ marginTop: 20 }}
         type="primary"
       >

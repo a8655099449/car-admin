@@ -1,10 +1,10 @@
-import request from "@/utils/request";
+import request from '@/utils/request';
 
 // 注册用户
 export const registerApi = (data: any) =>
   request({
-    url: "/user/create",
-    method: "post",
+    url: '/user/create',
+    method: 'post',
     data,
   });
 // login
@@ -15,20 +15,20 @@ interface Login {
 }
 export const loginApi = (data: any) =>
   request<Login>({
-    url: "/user/login",
-    method: "post",
+    url: '/user/login',
+    method: 'post',
     data,
   });
 
 export const userListAPI = (query: any) =>
   request<Pagination<UserInfo>>({
-    url: "/user/list",
-    method: "get",
+    url: '/user/list',
+    method: 'get',
     params: query,
   });
 export const getMailCode = (email: string) =>
   request<Pagination<UserInfo>>({
-    url: "/user/mail",
-    method: "post",
+    url: '/user/mail',
+    method: 'post',
     data: { email },
   });

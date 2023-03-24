@@ -1,7 +1,7 @@
-import { createList } from "@/api/car";
-import { Button, Input, Message, Table } from "@arco-design/web-react"
-import { useMemo } from "react";
+import { Button, Input, Message, Table } from '@arco-design/web-react';
+import { useMemo } from 'react';
 
+import { createList } from '@/api/car';
 
 const testStr = `
 22.3
@@ -114,114 +114,116 @@ YARiS L致炫
 4500
 0
 76400
-`
+`;
 
 const transitionData = (str: string) => {
+  const textArr = str.split('\n').filter((item) => item.trim());
 
-  const textArr = str.split("\n").filter((item) => item.trim())
-
-  const keyArr: (keyof CarItem)[] = ['inventoryTime', 'brand', 'saleCount', 'model', 'guidePrice', 'discount', 'nakedPrice', 'insurance', 'purchaseTax', 'landingPrice'];
+  const keyArr: (keyof CarItem)[] = [
+    'inventoryTime',
+    'brand',
+    'saleCount',
+    'model',
+    'guidePrice',
+    'discount',
+    'nakedPrice',
+    'insurance',
+    'purchaseTax',
+    'landingPrice',
+  ];
 
   if (textArr.length % keyArr.length !== 0) {
-    Message.warning('解析错误，请检查')
+    Message.warning('解析错误，请检查');
 
-    return []
+    return [];
   }
 
-
-  let obj = {} as any
-  const itemList: CarItem[] = []
+  let obj = {} as any;
+  const itemList: CarItem[] = [];
 
   for (let i = 0; i < textArr.length; i++) {
-    const v = textArr[i]
+    const v = textArr[i];
 
-    const index = i % keyArr.length
+    const index = i % keyArr.length;
 
-    obj[keyArr[index]] = v
+    obj[keyArr[index]] = v;
     if (index === keyArr.length - 1) {
-      itemList.push(obj)
-      obj = {}
+      itemList.push(obj);
+      obj = {};
     }
   }
 
-  return itemList
-
-}
-
+  return itemList;
+};
 
 const CreateList = () => {
-
-  const list = useMemo(() => transitionData(testStr), [])
+  const list = useMemo(() => transitionData(testStr), []);
 
   const handleSave = async () => {
-    const res = await createList(list)
-    console.log('👴2023-03-16 17:32:09 index.tsx line:158', res)
-  }
+    const res = await createList(list);
+    console.log('👴2023-03-16 17:32:09 index.tsx line:158', res);
+  };
 
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-
         <Button onClick={handleSave}>保存</Button>
-
       </div>
-      <Input.TextArea style={{
-        height: 200,
-        marginBottom: 10
-      }} />
-
+      <Input.TextArea
+        style={{
+          height: 200,
+          marginBottom: 10,
+        }}
+      />
 
       <Table<CarItem>
         data={list}
         rowKey={'brand'}
         columns={[
           {
-            dataIndex: "inventoryTime",
-            title: "盘点时间"
+            dataIndex: 'inventoryTime',
+            title: '盘点时间',
           },
           {
-            dataIndex: "brand",
-            title: "品牌"
+            dataIndex: 'brand',
+            title: '品牌',
           },
           {
-            dataIndex: "saleCount",
-            title: "销量"
+            dataIndex: 'saleCount',
+            title: '销量',
           },
           {
-            dataIndex: "model",
-            title: "车型"
+            dataIndex: 'model',
+            title: '车型',
           },
           {
-            dataIndex: "guidePrice",
-            title: "指导价"
+            dataIndex: 'guidePrice',
+            title: '指导价',
           },
           {
-            dataIndex: "discount",
-            title: "优惠行情价"
+            dataIndex: 'discount',
+            title: '优惠行情价',
           },
           {
-            dataIndex: "nakedPrice",
-            title: "裸车价"
+            dataIndex: 'nakedPrice',
+            title: '裸车价',
           },
           {
-            dataIndex: "insurance",
-            title: "保险"
+            dataIndex: 'insurance',
+            title: '保险',
           },
           {
-            dataIndex: "purchaseTax",
-            title: "购置税"
+            dataIndex: 'purchaseTax',
+            title: '购置税',
           },
           {
-            dataIndex: "landingPrice",
-            title: "落地行情价"
+            dataIndex: 'landingPrice',
+            title: '落地行情价',
           },
-
         ]}
-
       />
     </div>
-  )
-}
+  );
+};
 
-
-export default CreateList
+export default CreateList;

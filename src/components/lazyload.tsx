@@ -1,7 +1,6 @@
-import React from "react";
-// @ts-ignore
-import loadable from "@loadable/component";
-import { Skeleton, Spin } from "@arco-design/web-react";
+import { Skeleton, Spin } from '@arco-design/web-react';
+import loadable from '@loadable/component';
+import React from 'react';
 
 // https://github.com/gregberge/loadable-components/pull/226
 function load(fn: any, options: any) {
@@ -28,9 +27,7 @@ function LoadingComponent(props: {
   );
 }
 
-export default (loader:any) => {
-
-
+export default (loader: any) => {
   return load(loader, {
     fallback: LoadingComponent({
       pastDelay: true,

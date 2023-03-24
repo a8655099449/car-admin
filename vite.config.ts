@@ -39,16 +39,10 @@ export default ({ command }: ConfigEnv): UserConfigExport => ({
         rewrite: (path) => path.replace(/^\/oss/, ''),
       },
       '/loadOss': {
-        target: 'http://kuangw.oss-cn-beijing.aliyuncs.com',
-        // target: 'https://oss-cn-hangzhou.aliyuncs.com',
+        // target: 'http://kuangw.oss-cn-beijing.aliyuncs.com',
+        target: 'https://zjs-ugc.oss-cn-hangzhou.aliyuncs.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/loadOss/, ''),
-      },
-      '/baiduMap': {
-        target: 'https://api.map.baidu.com/',
-        // target: 'https://oss-cn-hangzhou.aliyuncs.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/baiduMap/, ''),
       },
     },
   },
