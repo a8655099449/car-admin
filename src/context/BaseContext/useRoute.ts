@@ -1,6 +1,7 @@
-import routes from "@/config/routes";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+
+import routes from '@/config/routes';
 
 export type TUseRoutes = {
   currentRoute: RouteItem | null;
@@ -11,12 +12,11 @@ export const useRoutes = (): TUseRoutes => {
 
   const findRouteByKey = (pathname: string, routes: RouteItem[]): RouteItem => {
     const findRoute = (pathname: string, routes: RouteItem[]): RouteItem => {
-      let current: RouteItem;
-      pathname = pathname.replace(/^\//, "");
+      let current = {} as RouteItem;
 
       routes.forEach((item) => {
         if (current) return;
-        if (item.key === pathname) {
+        if (item.path === pathname) {
           return (current = item);
         }
 
@@ -24,7 +24,6 @@ export const useRoutes = (): TUseRoutes => {
           current = findRoute(pathname, item.children);
         }
       });
-      // @ts-ignore
       return current;
     };
 
@@ -35,6 +34,5 @@ export const useRoutes = (): TUseRoutes => {
     return findRouteByKey(pathname, routes);
   }, [pathname]);
 
-
-  return { currentRoute:_currentRoute };
+  return { currentRoute: _currentRoute };
 };

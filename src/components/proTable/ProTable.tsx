@@ -1,21 +1,19 @@
-import { Empty, PaginationProps, Table, TableProps } from '@arco-design/web-react';
-import { useRequest } from 'ahooks';
+import { Empty, PaginationProps, Table } from '@arco-design/web-react';
 import { ReactElement, useRef, useState } from 'react';
 
-import { default as ajax } from '@/utils/request';
-import to from '@/utils/to';
-
 import { DEFAULT_PAGE_SIZE, DEFAULT_REQUEST_DATE } from './defaultData';
-import { useTableSetting } from './hooks';
+import { useTableColumns, useTableRequest, useTableSetting } from './hooks';
 import styles from './index.module.less';
 import SearchBar from './SearchBar';
 import ToolBar from './ToolBar';
-import { ProTableProps, TableRequest } from './type';
+import { ProTableProps } from './type';
 
 function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
-  const { columns = [], data = [], request, pagination = {} } = props;
+  const { columns = [], data = [], pagination = {}, showIndex } = props;
 
-  const tableSetting = useTableSetting<T>(columns);
+  const tableSetting = useTableSetting<T>(props);
+
+  const tableCols = useTableColumns(tableSetting._columns);
 
   const { defaultPageSize = DEFAULT_PAGE_SIZE, onChange: onPaginationChange } =
     pagination as PaginationProps;
@@ -29,44 +27,9 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
     data: _data = DEFAULT_REQUEST_DATE,
     run,
     loading,
-  } = useRequest(async () => {
-    let _request: TableRequest<T> = undefined;
-
-    if (typeof request === 'string') {
-      _request = async (params, searchValues) => {
-        const res = await ajax<Pagination<T>>({
-          url: request,
-          method: 'GET',
-          params: { ...params, ...searchValues },
-        });
-        return {
-          data: res.data.items,
-          success: true,
-          total: res.data.total,
-        };
-      };
-    } else if (typeof request === 'function') {
-      _request = request;
-    }
-    if (!_request) {
-      return DEFAULT_REQUEST_DATE;
-    }
-
-    const [err, res] = await to(
-      _request?.(
-        {
-          page: ref.current.pagination.current || 1,
-          pageSize: ref.current.pagination.pageSize || defaultPageSize || 10,
-        },
-        ref.current.searchValues,
-      ),
-    );
-
-    if (err) {
-      return DEFAULT_REQUEST_DATE;
-    }
-
-    return res;
+  } = useTableRequest({
+    request: props.request,
+    searchRef: ref,
   });
 
   const [_pagination, set_Pagination] = useState<PaginationProps>({
@@ -92,11 +55,13 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
           run();
         }}
       />
-      <ToolBar
+      <ToolBar<T>
+        {...tableSetting}
+        {...props}
         onRefresh={run}
         onTableSizeChange={setTableSize}
         tableSize={tableSize}
-        {...(tableSetting as any)}
+        refreshLoading={loading}
       />
 
       <Table<T>
@@ -104,7 +69,7 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
         loading={loading}
         {...props}
         data={_data?.data || data}
-        columns={tableSetting._columns}
+        columns={tableCols}
         pagination={{
           ..._pagination,
 

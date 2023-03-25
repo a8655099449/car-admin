@@ -1,4 +1,5 @@
-import { Drawer } from '@arco-design/web-react';
+import { Button, Drawer } from '@arco-design/web-react';
+import { IconPlus, IconRobotAdd } from '@arco-design/web-react/icon';
 import { FC, ReactElement } from 'react';
 
 import PageWrap from '@/components/base/PageWrap';
@@ -17,22 +18,31 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
       <ProTable<CarItem>
         request={'/car/list'}
         rowKey={'id'}
+        showIndex
+        toolButtons={[
+          <Button key={'add'} type="primary" icon={<IconPlus />}>
+            添加
+          </Button>,
+        ]}
+        title={'百车盘点'}
         columns={[
-          {
-            title: 'id',
-            dataIndex: 'id',
-          },
           {
             title: '盘点时间',
             dataIndex: 'inventoryTime',
           },
           {
-            title: '销量',
-            dataIndex: 'saleCount',
+            title: '品牌',
+            dataIndex: 'brand',
+            search: true,
           },
           {
             title: '型号',
             dataIndex: 'model',
+            search: true,
+          },
+          {
+            title: '销量',
+            dataIndex: 'saleCount',
           },
           {
             title: '指导价',

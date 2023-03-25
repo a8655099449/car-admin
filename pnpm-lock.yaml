@@ -8,6 +8,7 @@ specifiers:
   '@types/react': ^17.0.33
   '@types/react-color': ^3.0.6
   '@types/react-dom': ^17.0.10
+  '@types/react-helmet': ^6.1.6
   '@types/react-router-dom': ^5.3.3
   '@typescript-eslint/eslint-plugin': ^5.10.2
   '@typescript-eslint/parser': ^5.10.2
@@ -16,6 +17,7 @@ specifiers:
   ali-oss: ^6.17.1
   axios: ^0.26.0
   crypto-js: ^4.1.1
+  dayjs: ^1.11.7
   eslint: ^8.8.0
   eslint-config-prettier: ^8.3.0
   eslint-plugin-import: ^2.25.4
@@ -30,6 +32,7 @@ specifiers:
   react: ^17.0.2
   react-color: ^2.19.3
   react-dom: ^17.0.2
+  react-helmet: ^6.1.0
   react-router-dom: 5.2.0
   rollup-plugin-visualizer: ^5.5.4
   typescript: ^4.4.4
@@ -44,9 +47,11 @@ dependencies:
   ali-oss: 6.17.1
   axios: 0.26.1
   crypto-js: 4.1.1
+  dayjs: 1.11.7
   react: 17.0.2
   react-color: 2.19.3_react@17.0.2
   react-dom: 17.0.2_react@17.0.2
+  react-helmet: 6.1.0_react@17.0.2
   react-router-dom: 5.2.0_react@17.0.2
 
 devDependencies:
@@ -54,6 +59,7 @@ devDependencies:
   '@types/react': 17.0.53
   '@types/react-color': 3.0.6
   '@types/react-dom': 17.0.19
+  '@types/react-helmet': 6.1.6
   '@types/react-router-dom': 5.3.3
   '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
   '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
@@ -609,6 +615,12 @@ packages:
 
   /@types/react-dom/17.0.19:
     resolution: {integrity: sha512-PiYG40pnQRdPHnlf7tZnp0aQ6q9tspYr72vD61saO6zFCybLfMqwUCN0va1/P+86DXn18ZWeW30Bk7xlC5eEAQ==}
+    dependencies:
+      '@types/react': 17.0.53
+    dev: true
+
+  /@types/react-helmet/6.1.6:
+    resolution: {integrity: sha512-ZKcoOdW/Tg+kiUbkFCBtvDw0k3nD4HJ/h/B9yWxN4uDO8OkRksWTO+EL+z/Qu3aHTeTll3Ro0Cc/8UhwBCMG5A==}
     dependencies:
       '@types/react': 17.0.53
     dev: true
@@ -3448,6 +3460,10 @@ packages:
       scheduler: 0.20.2
     dev: false
 
+  /react-fast-compare/3.2.1:
+    resolution: {integrity: sha512-xTYf9zFim2pEif/Fw16dBiXpe0hoy5PxcD8+OwBnTtNLfIm3g6WxhKNurY+6OmdH1u6Ta/W/Vl6vjbYP1MFnDg==}
+    dev: false
+
   /react-focus-lock/2.9.4_h7fc2el62uaa77gho3xhys6ola:
     resolution: {integrity: sha512-7pEdXyMseqm3kVjhdVH18sovparAzLg5h6WvIx7/Ck3ekjhrrDMEegHSa3swwC8wgfdd7DIdUVRGeiHT9/7Sgg==}
     peerDependencies:
@@ -3465,6 +3481,18 @@ packages:
       react-clientside-effect: 1.2.6_react@17.0.2
       use-callback-ref: 1.3.0_h7fc2el62uaa77gho3xhys6ola
       use-sidecar: 1.1.2_h7fc2el62uaa77gho3xhys6ola
+    dev: false
+
+  /react-helmet/6.1.0_react@17.0.2:
+    resolution: {integrity: sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==}
+    peerDependencies:
+      react: '>=16.3.0'
+    dependencies:
+      object-assign: 4.1.1
+      prop-types: 15.8.1
+      react: 17.0.2
+      react-fast-compare: 3.2.1
+      react-side-effect: 2.1.2_react@17.0.2
     dev: false
 
   /react-is/16.13.1:
@@ -3506,6 +3534,14 @@ packages:
       react-is: 16.13.1
       tiny-invariant: 1.3.1
       tiny-warning: 1.0.3
+    dev: false
+
+  /react-side-effect/2.1.2_react@17.0.2:
+    resolution: {integrity: sha512-PVjOcvVOyIILrYoyGEpDN3vmYNLdy1CajSFNt4TDsVQC5KpTijDvWVoR+/7Rz2xT978D8/ZtFceXxzsPwZEDvw==}
+    peerDependencies:
+      react: ^16.3.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 17.0.2
     dev: false
 
   /react-transition-group/4.4.5_sfoxds7t5ydpegc3knd667wn6m:

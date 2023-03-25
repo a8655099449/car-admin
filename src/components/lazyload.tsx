@@ -1,4 +1,4 @@
-import { Skeleton, Spin } from '@arco-design/web-react';
+import { Spin } from '@arco-design/web-react';
 import loadable from '@loadable/component';
 import React from 'react';
 

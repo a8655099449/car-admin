@@ -1,19 +1,20 @@
-import { Checkbox, Dropdown, Menu, Space } from '@arco-design/web-react';
+import { Button, Checkbox, Dropdown, Menu, Space } from '@arco-design/web-react';
 import { IconOriginalSize, IconRefresh, IconSettings } from '@arco-design/web-react/icon';
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, ReactNode } from 'react';
 
 import IconButton from '../IconButton';
 import { useTableSetting } from './hooks';
 import styles from './index.module.less';
-import { TableSize } from './type';
+import { ProTableProps, TableSize } from './type';
 
-type ToolBarProps = {
-  onRefresh?: () => void;
-  title?: string;
-  tableSize?: TableSize;
-  onTableSizeChange?: (size: TableSize) => void;
-} & ReturnType<typeof useTableSetting>;
-const ToolBar: FC<ToolBarProps> = ({
+type ToolBarProps<T = unknown> = ReturnType<typeof useTableSetting<T>> &
+  ProTableProps<T> & {
+    onRefresh?: () => void;
+    tableSize?: TableSize;
+    onTableSizeChange?: (size: TableSize) => void;
+    refreshLoading: boolean;
+  };
+function ToolBar<T>({
   onRefresh,
   title,
   tableSize = 'default',
@@ -21,16 +22,18 @@ const ToolBar: FC<ToolBarProps> = ({
   selectCols,
   options,
   setSelectCols,
-}): ReactElement => {
+  toolButtons,
+  refreshLoading,
+}: ToolBarProps<T>): ReactElement {
   return (
     <div className={`${styles['toolbar']}`}>
-      <div>{title}</div>
+      <div className={`${styles['title']}`}>{title}</div>
       <div>
         <Space>
+          {toolButtons}
           <IconButton onClick={() => onRefresh?.()}>
-            <IconRefresh />
+            <IconRefresh spin={refreshLoading} />
           </IconButton>
-
           <Dropdown
             droplist={
               <Menu
@@ -106,6 +109,6 @@ const ToolBar: FC<ToolBarProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default ToolBar;

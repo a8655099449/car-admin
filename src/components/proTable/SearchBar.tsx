@@ -3,6 +3,7 @@ import { IconDown, IconUp } from '@arco-design/web-react/icon';
 import { ReactElement, useMemo, useState } from 'react';
 
 import styles from './index.module.less';
+import SearchFormItem from './SearchFormItem';
 import { ProTableProps } from './type';
 
 const Col = ({ className = '', children }) => {
@@ -27,8 +28,21 @@ function SearchBar<T = unknown>(props: ProTableProps<T>): ReactElement {
   };
 
   const search = () => {
-    console.log('👴2023-03-24 16:35:08 SearchBar.tsx line:31', form.getFieldsValue());
-    onSearch?.(form.getFieldsValue());
+    const values = form.getFieldsValue();
+    console.log('👴2023-03-25 11:03:53 SearchBar.tsx line:33', values);
+
+    Object.keys(values).forEach((key) => {
+      if (typeof values[key] === 'string') {
+        values[key] = values[key].trim();
+      }
+      if (Array.isArray(values[key])) {
+        values[key] = values[key].join(',');
+      }
+    });
+
+    // values
+
+    onSearch?.(values);
   };
 
   const [open, setOpen] = useState(false);
@@ -46,12 +60,9 @@ function SearchBar<T = unknown>(props: ProTableProps<T>): ReactElement {
       >
         {_columns.map((item, index) => {
           const isHide = index > 4 && !open;
-
           return (
             <Col key={item.dataIndex} className={`${isHide ? styles['hide'] : ''}`}>
-              <Form.Item label={item.title} field={item.dataIndex}>
-                <Input placeholder={item.title as string} />
-              </Form.Item>
+              <SearchFormItem<T> {...item} />
             </Col>
           );
         })}

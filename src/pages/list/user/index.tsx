@@ -2,12 +2,13 @@ import { Button, Space } from '@arco-design/web-react';
 import { FC, ReactElement } from 'react';
 
 import { userListAPI } from '@/api/user';
+import PageWrap from '@/components/base/PageWrap';
 import ProTable from '@/components/proTable/ProTable';
 
 type UserListProps = any;
 const UserList: FC<UserListProps> = (): ReactElement => {
   return (
-    <div>
+    <PageWrap>
       <ProTable<UserInfo>
         request={async (q, s) => {
           const { data } = await userListAPI({
@@ -24,10 +25,18 @@ const UserList: FC<UserListProps> = (): ReactElement => {
           {
             title: '名字',
             dataIndex: 'name',
+            search: true,
+          },
+          {
+            title: '邮箱',
+            dataIndex: 'email',
+            search: true,
           },
           {
             title: '注册时间',
             dataIndex: 'createTime',
+            search: true,
+            valueType: 'dateRange',
           },
           {
             title: '操作',
@@ -48,7 +57,7 @@ const UserList: FC<UserListProps> = (): ReactElement => {
           current: 1,
         }}
       />
-    </div>
+    </PageWrap>
   );
 };
 

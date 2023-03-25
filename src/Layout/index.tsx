@@ -6,18 +6,9 @@ import styles from './layout.module.less';
 
 const { Sider, Content } = Layout;
 const { Item: MenuItem, SubMenu } = Menu;
-import {
-  IconApps,
-  IconCheckCircle,
-  IconDashboard,
-  IconExclamationCircle,
-  IconFile,
-  IconList,
-  IconMenuFold,
-  IconMenuUnfold,
-  IconSettings,
-  IconUser,
-} from '@arco-design/web-react/icon';
+import * as Icon from '@arco-design/web-react/icon';
+
+const { IconMenuUnfold, IconMenuFold } = Icon;
 
 // import{  } from "./components/BaseContext";
 import lazyload from '@/components/lazyload';
@@ -26,31 +17,26 @@ import { getContext } from '@/context/BaseContext';
 
 import routes from '../config/routes';
 import Auth from './components/Auth';
+import { useListenRoute } from './hooks';
 import getFlattenRoutes from './loadRoute';
 
 const isArray = Array.isArray;
-function getIconFromKey(key) {
-  switch (key) {
-    case 'home':
-      return <IconDashboard />;
-    case 'list':
-      return <IconList />;
-    case 'form':
-      return <IconSettings />;
-    case 'profile':
-      return <IconFile />;
-    case 'visualization':
-      return <IconApps />;
-    case 'result':
-      return <IconCheckCircle />;
-    case 'exception':
-      return <IconExclamationCircle />;
-    case 'user':
-      return <IconUser />;
-    default:
-      return <IconUser />;
+
+const getMenuIcon = (icon: unknown) => {
+  let Com: ReactElement = <>{icon}</>;
+  if (typeof icon === 'string') {
+    if (Icon[icon]) {
+      const I = Icon[icon];
+      Com = (
+        <>
+          <I />
+        </>
+      );
+    }
   }
-}
+
+  return Com;
+};
 
 const BaseLayout = (): ReactElement => {
   const _routes = useMemo<RouteItem[]>(() => {
@@ -58,21 +44,13 @@ const BaseLayout = (): ReactElement => {
   }, []);
   const { pathname } = useLocation();
 
-  const { userInfo, currentRoute } = getContext();
+  const { userInfo } = getContext();
   const routeMap = useRef<Map<string, React.ReactNode[]>>(new Map());
-  const [menuKey, setMenuKey] = useState(pathname);
-  // const [collapsed, setCollapsed] = useState(false);
+
   const { setting, setSetting } = getContext();
   const { collapsed } = setting;
 
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
-
-  useEffect(() => {
-    const _key = pathname.replace(/^\//, '');
-    setSelectedKeys([_key]);
-  }, [pathname]);
+  const { selectKeys, openKeys, setOpenKeys } = useListenRoute();
 
   function renderRoutes() {
     routeMap.current.clear();
@@ -86,7 +64,7 @@ const BaseLayout = (): ReactElement => {
           return null;
         }
 
-        const iconDom = getIconFromKey(route.key);
+        const iconDom = getMenuIcon(route.icon);
         const titleDom = (
           <>
             {iconDom} {route.name}
@@ -97,21 +75,18 @@ const BaseLayout = (): ReactElement => {
           (!isArray(route.children) ||
             (isArray(route.children) && !route.children.length))
         ) {
-          routeMap.current.set(
-            `/${route.key}`,
-            breadcrumb ? [...parentNode, route.name] : [],
-          );
+          routeMap.current.set(route.path, breadcrumb ? [...parentNode, route.name] : []);
 
           if (level > 1) {
             return (
-              <MenuItem key={route.key}>
-                <Link to={`/${route.key}`}>{titleDom}</Link>
+              <MenuItem key={route.path}>
+                <Link to={`${route.path}`}>{titleDom}</Link>
               </MenuItem>
             );
           }
           nodes.push(
-            <MenuItem key={route.key}>
-              <Link to={`/${route.key}`}>{titleDom}</Link>
+            <MenuItem key={route.path}>
+              <Link to={`${route.path}`}>{titleDom}</Link>
             </MenuItem>,
           );
         }
@@ -123,13 +98,13 @@ const BaseLayout = (): ReactElement => {
 
           if (level > 1) {
             return (
-              <SubMenu key={route.key} title={titleDom}>
+              <SubMenu key={route.path} title={titleDom}>
                 {travel(route.children, level + 1, [...parentNode, route.name])}
               </SubMenu>
             );
           }
           nodes.push(
-            <SubMenu key={route.key} title={titleDom}>
+            <SubMenu key={route.path} title={titleDom}>
               {travel(route.children, level + 1, [...parentNode, route.name])}
             </SubMenu>,
           );
@@ -156,7 +131,7 @@ const BaseLayout = (): ReactElement => {
             onClickSubMenu={(key, openKeys) => {
               setOpenKeys(openKeys);
             }}
-            selectedKeys={selectedKeys}
+            selectedKeys={selectKeys}
           >
             {renderRoutes()}
           </Menu>
@@ -176,10 +151,8 @@ const BaseLayout = (): ReactElement => {
         >
           <Auth>
             <Switch>
-              {_routes.map(({ component, key, path }) => {
-                return (
-                  <Route key={key} path={path || `/${key}`} component={component} exact />
-                );
+              {_routes.map(({ component, path }) => {
+                return <Route key={path} path={path} component={component} exact />;
               })}
 
               <Route exact path="/">
