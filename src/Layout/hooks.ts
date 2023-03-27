@@ -17,7 +17,6 @@ export const useListenRoute = () => {
       .split('/')
       .filter((item) => item)
       .map((item) => `/${item}`);
-    console.log('👴2023-03-25 17:44:33 hooks.ts line:17', _openKeys);
 
     setOpenKeys(_openKeys);
   }, []);

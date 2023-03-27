@@ -53,10 +53,8 @@ const BaseContext = ({ children }): ReactElement => {
   const { pathname } = useLocation();
 
   const pageTitle = useMemo(() => {
-    pathname;
-    console.log('👴2023-03-25 17:34:50 index.tsx line:60', routeMap);
-    return pathname;
-  }, []);
+    return routeMap?.[pathname]?.name || '404';
+  }, [pathname]);
 
   return (
     <Context.Provider value={{ ...p, ...u, ...r }}>

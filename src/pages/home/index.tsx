@@ -84,7 +84,6 @@ const HomePage: FC<HomePageProps> = (): ReactElement => {
       <h1>welcome</h1>
       <Upload
         onChange={(file) => {
-          console.log('👴2023-03-24 14:38:39 index.tsx line:87', file);
           // setFile(file);
         }}
         directory // 上传文件夹

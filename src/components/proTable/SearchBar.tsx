@@ -29,7 +29,6 @@ function SearchBar<T = unknown>(props: ProTableProps<T>): ReactElement {
 
   const search = () => {
     const values = form.getFieldsValue();
-    console.log('👴2023-03-25 11:03:53 SearchBar.tsx line:33', values);
 
     Object.keys(values).forEach((key) => {
       if (typeof values[key] === 'string') {

@@ -1,11 +1,12 @@
 import { Button, Drawer } from '@arco-design/web-react';
 import { IconPlus, IconRobotAdd } from '@arco-design/web-react/icon';
 import { FC, ReactElement } from 'react';
+import { Link } from 'react-router-dom';
 
 import PageWrap from '@/components/base/PageWrap';
 import ProTable from '@/components/proTable/ProTable';
 
-import CreateList from './CreateList';
+import CreateList from './carAdd';
 
 type CarPageProps = any;
 const CarPage: FC<CarPageProps> = (): ReactElement => {
@@ -20,9 +21,11 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
         rowKey={'id'}
         showIndex
         toolButtons={[
-          <Button key={'add'} type="primary" icon={<IconPlus />}>
-            添加
-          </Button>,
+          <Link to="/list/car/carAdd" key={'add'}>
+            <Button type="primary" icon={<IconPlus />}>
+              添加
+            </Button>
+          </Link>,
         ]}
         title={'百车盘点'}
         columns={[

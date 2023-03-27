@@ -75,8 +75,6 @@ function ToolBar<T>({
                       } else {
                         setSelectCols([]);
                       }
-
-                      console.log('👴2023-03-24 18:45:49 ToolBar.tsx line:71', e);
                     }}
                   >
                     全选

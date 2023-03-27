@@ -1,7 +1,23 @@
+import { Breadcrumb } from '@arco-design/web-react';
 import { FC, ReactElement } from 'react';
+import { Link } from 'react-router-dom';
 
-type PageWrapProps = any;
-const PageWrap: FC<PageWrapProps> = ({ children }): ReactElement => {
+type PageWrapProps = Partial<{
+  title: ReactElement | string;
+  breadcrumb: {
+    title: string;
+    link: string;
+  }[];
+  showTitle: boolean;
+  headExtra: ReactElement;
+}>;
+const PageWrap: FC<PageWrapProps> = ({
+  children,
+  breadcrumb,
+  title,
+  showTitle,
+  headExtra,
+}): ReactElement => {
   return (
     <div
       className="base-page-wrap"
@@ -12,6 +28,21 @@ const PageWrap: FC<PageWrapProps> = ({ children }): ReactElement => {
         minHeight: `calc(100vh - 104px)`,
       }}
     >
+      {breadcrumb && (
+        <div style={{ marginBottom: 10 }} className="flex-center">
+          <Breadcrumb>
+            {breadcrumb.map((item) => (
+              <Breadcrumb.Item key={item.link}>
+                <Link to={item.link}>{item.title}</Link>
+              </Breadcrumb.Item>
+            ))}
+            <Breadcrumb.Item>{title}</Breadcrumb.Item>
+          </Breadcrumb>
+          <div>{headExtra}</div>
+        </div>
+      )}
+
+      {showTitle && <h2>{title}</h2>}
       {children}
     </div>
   );

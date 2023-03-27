@@ -9,7 +9,16 @@ function getFlattenRoutes(routes: RouteItem[]): any {
       const key = route.path.replace(/^\//, '');
 
       if (key && !route.children) {
-        route.component = lazyload(mod[`../pages/${key}/index.tsx`]);
+        if (key === 'list/car/carAdd') {
+          console.log(
+            '👴2023-03-27 11:16:29 loadRoute.ts line:15',
+            mod[`../pages/${key}/index.tsx`],
+          );
+        }
+
+        const content = mod[`../pages/${key}/index.tsx`] || mod[`../pages/${key}.tsx`];
+
+        route.component = lazyload(content);
         res.push(route);
       } else if (Array.isArray(route.children) && route.children.length) {
         travel(route.children);

@@ -17,7 +17,12 @@ const routes: RouteItem[] = [
       {
         path: '/list/car',
         name: '百车盘点',
-        icon: 'IconCaretUp',
+        icon: 'IconSend',
+      },
+      {
+        path: '/list/car/carAdd',
+        name: '新增',
+        hideInMenu: true,
       },
     ],
   },
