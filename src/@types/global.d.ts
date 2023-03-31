@@ -36,7 +36,7 @@ interface Pagination<T> {
 
 type CarItem = {
   id: number;
-  inventoryTime: string; // 盘点时间
+  inventoryTime: string | Date; // 盘点时间
   brand: string; // 品牌
   saleCount: number; // 销量
   model: string; // 型号
@@ -47,3 +47,8 @@ type CarItem = {
   purchaseTax: number; // 购置税
   landingPrice: number; // 落地行情价
 };
+
+namespace window {
+  const BMapGL: unknown;
+  const BMapLib: unknown;
+}

@@ -1,4 +1,4 @@
-import { Button, Form, Input, Space } from '@arco-design/web-react';
+import { Button, Form, Space } from '@arco-design/web-react';
 import { IconDown, IconUp } from '@arco-design/web-react/icon';
 import { ReactElement, useMemo, useState } from 'react';
 
@@ -11,7 +11,7 @@ const Col = ({ className = '', children }) => {
 };
 
 function SearchBar<T = unknown>(props: ProTableProps<T>): ReactElement {
-  const { columns = [], onSearch } = props;
+  const { columns = [], onSearch, searchFormProps = {} } = props;
   const _columns = useMemo(() => {
     return columns.filter((item) => item.search);
   }, [columns]);
@@ -56,12 +56,14 @@ function SearchBar<T = unknown>(props: ProTableProps<T>): ReactElement {
         className={`${styles['search-bar']} ${styles['row-' + (_columns.length % 3)]}   `}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
+        onValuesChange={props.onSearchValuesChange}
+        {...searchFormProps}
       >
         {_columns.map((item, index) => {
           const isHide = index > 4 && !open;
           return (
             <Col key={item.dataIndex} className={`${isHide ? styles['hide'] : ''}`}>
-              <SearchFormItem<T> {...item} />
+              <SearchFormItem<T> {...item} onEnter={search} />
             </Col>
           );
         })}

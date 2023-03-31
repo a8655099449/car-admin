@@ -20,6 +20,16 @@ const routes: RouteItem[] = [
         icon: 'IconSend',
       },
       {
+        path: '/list/car/map',
+        name: '地图',
+        icon: 'IconSend',
+      },
+      {
+        path: '/list/car/huaiAn',
+        name: '淮安地图',
+        icon: 'IconSend',
+      },
+      {
         path: '/list/car/carAdd',
         name: '新增',
         hideInMenu: true,

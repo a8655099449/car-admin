@@ -1,4 +1,4 @@
-import { Badge, PaginationProps } from '@arco-design/web-react';
+import { Badge } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
@@ -7,11 +7,12 @@ import { default as ajax } from '@/utils/request';
 import to from '@/utils/to';
 
 import { DEFAULT_PAGE_SIZE, DEFAULT_REQUEST_DATE } from './defaultData';
-import { ProTableColumnProps, ProTableProps, TableRequest } from './type';
+import { ProTableColumnProps, ProTableProps, SearchRef, TableRequest } from './type';
 // useTableSetting 内置的一些setting操作
 export function useTableSetting<T>(props: ProTableProps<T>) {
-  const { columns = [], showIndex } = props;
+  const { columns = [], showIndex, pagination } = props;
 
+  console.log('👴2023-03-28 15:17:12 hooks.tsx line:16', pagination);
   const cols = useMemo(() => {
     const _columns = columns;
 
@@ -77,12 +78,17 @@ export function useTableSetting<T>(props: ProTableProps<T>) {
 // useTableColumns 主要作用是修改Table的columns的渲染方式
 export function useTableColumns<T>(cols: ProTableColumnProps<T>[]) {
   const _columns = useMemo(() => {
-    const _cols = cols.map((col) => {
+    const _cols = cols?.map((col) => {
       const { valueType, render } = col;
 
       if (!render && valueType === 'dateRange') {
         col.render = (value) => {
           return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+        };
+      }
+      if (!render && valueType === 'dateMonth') {
+        col.render = (value) => {
+          return dayjs(value).format('YYYY年MM月');
         };
       }
 
@@ -97,10 +103,7 @@ export function useTableColumns<T>(cols: ProTableColumnProps<T>[]) {
 
 export function useTableRequest<T>(params: {
   request: TableRequest<T> | string;
-  searchRef: React.MutableRefObject<{
-    pagination: PaginationProps;
-    searchValues: Partial<T>;
-  }>;
+  searchRef: SearchRef<T>;
 }) {
   const { request, searchRef } = params;
 
@@ -108,11 +111,11 @@ export function useTableRequest<T>(params: {
     let _request: TableRequest<T> = undefined;
 
     if (typeof request === 'string') {
-      _request = async (params, searchValues) => {
+      _request = async (params, searchValues, sorter) => {
         const res = await ajax<Pagination<T>>({
           url: request,
           method: 'GET',
-          params: { ...params, ...searchValues },
+          params: { ...params, ...searchValues, sorter },
         });
         return {
           data: res.data.items,
@@ -134,6 +137,7 @@ export function useTableRequest<T>(params: {
           pageSize: searchRef.current.pagination.pageSize || DEFAULT_PAGE_SIZE,
         },
         searchRef.current.searchValues,
+        searchRef.current.sorter,
       ),
     );
 

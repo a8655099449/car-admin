@@ -77,3 +77,6 @@ export const splitArrayForLen = <T>(arr: T[], len = 0) => {
 
   return result;
 };
+
+// 去除空格
+export const trim = (str: string) => str?.replace(/\s/g, ``);
