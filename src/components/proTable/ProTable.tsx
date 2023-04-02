@@ -125,6 +125,8 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
         columns={tableCols}
         pagination={{
           ..._pagination,
+          showTotal: true,
+          size: tableSize === 'middle' ? 'large' : tableSize,
           sizeCanChange: true,
           total: _data?.total || 0,
           ...(pagination as PaginationProps),

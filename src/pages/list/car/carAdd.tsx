@@ -4,128 +4,135 @@ import {
   DatePicker,
   Dropdown,
   Input,
-  InputNumber,
   Menu,
-  Message,
   Popconfirm,
-  Radio,
-  ResizeBox,
   Space,
   Table,
 } from '@arco-design/web-react';
-import { IconSettings } from '@arco-design/web-react/icon';
-import { useLocalStorageState, useRequest } from 'ahooks';
-import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import { IconRefresh, IconRightCircle, IconSettings } from '@arco-design/web-react/icon';
+import { useMemo } from 'react';
 
-import { createList } from '@/api/car';
 import PageWrap from '@/components/base/PageWrap';
 import IconButton from '@/components/IconButton';
-import { splitArrayForLen, trim } from '@/utils';
-import { isChinese } from '@/utils/is';
 
-import testStr from './testStr';
-const keyArr: (keyof CarItem)[] = [
-  'inventoryTime',
-  'brand',
-  'saleCount',
-  'model',
-  'guidePrice',
-  'discount',
-  'nakedPrice',
-  'insurance',
-  'purchaseTax',
-  'landingPrice',
-];
-
-const transitionData = (str: string) => {
-  const textArr = str
-    .split('\n')
-    .filter((item) => item.trim())
-    .map((item) => (isChinese(item) ? item : trim(item)));
-
-  // if (textArr.length % keyArr.length !== 0) {
-  //   Message.warning('解析错误，请检查');
-  //   return [];
-  // }
-
-  let obj = {} as any;
-  const itemList: CarItem[] = [];
-
-  for (let i = 0; i < textArr.length; i++) {
-    const v = textArr[i];
-
-    const index = i % keyArr.length;
-
-    obj[keyArr[index]] = v;
-    if (index === keyArr.length - 1) {
-      itemList.push(obj);
-      obj = {};
-    }
-  }
-
-  return itemList;
-};
-
-const computerForMac = (text: string) => {
-  const texts = text.split('\n').filter((item) => item.trim());
-
-  const row = Math.ceil(texts.length / keyArr.length);
-
-  const lenList = splitArrayForLen(texts, row);
-  const res: CarItem[] = [];
-  for (let i = 0; i < row; i++) {
-    const item = {} as CarItem;
-    lenList
-      .map((item) => item[i])
-      .forEach((v, index) => {
-        const key = keyArr[index] as any;
-        if (isChinese(v)) {
-          console.log('👴2023-03-28 12:16:14 carAdd.tsx line:72', v);
-          item[key] = v;
-        } else {
-          item[key] = trim(v);
-        }
-      });
-    res.push(item);
-  }
-
-  return res;
-};
+import useCarAdd from './useCarAdd';
 
 const CreateList = () => {
-  const [text, setText] = useLocalStorageState('carAddText', {
-    defaultValue: testStr,
-  });
-  const [mode, setMode] = useLocalStorageState<'mac' | 'win'>('carAddMode', {
-    defaultValue: 'mac',
-  });
+  const {
+    list,
+    text,
+    setText,
+    setAddKeys,
+    setInventoryTime,
+    addKeys,
+    loading,
+    handleSave,
+    inventoryTime,
+    transitionData,
+    handleTableChange,
+  } = useCarAdd();
 
-  const list = useMemo(() => {
-    if (mode === 'mac') {
-      return computerForMac(text);
-    }
-    return transitionData(text);
-  }, [text, mode]);
-
-  const { run: handleSave, loading } = useRequest(
-    async () => {
-      const res = await createList(
-        list.map((item) => ({ ...item, inventoryTime: new Date(inventoryTime) })),
-      );
-      if (res.code === 200) {
-        Message.success('添加成功');
-        setText('');
-      }
-    },
+  const addKeyOptions = [
     {
-      manual: true,
+      label: '环比变化',
+      value: 'monthChange',
     },
-  );
+  ];
 
-  const [inventoryTime, setInventoryTime] = useLocalStorageState('inventoryTime', {
-    defaultValue: dayjs().format('YYYY-MM'),
-  });
+  const findErrorText = (key: string) => {
+    const reg = new RegExp(`\n${key}`);
+
+    setText(text.replace(reg, ` ${key}`));
+  };
+
+  const cols = useMemo(() => {
+    const cols = [
+      {
+        dataIndex: 'inventoryTime',
+        title: '盘点时间',
+      },
+      {
+        dataIndex: 'brand',
+        title: '品牌',
+        width: 150,
+      },
+      {
+        dataIndex: 'saleCount',
+        title: '销量',
+      },
+      {
+        dataIndex: 'model',
+        title: '车型',
+        width: 200,
+      },
+      {
+        dataIndex: 'guidePrice',
+        title: '指导价',
+      },
+      {
+        dataIndex: 'discount',
+        title: '优惠行情价',
+      },
+      {
+        dataIndex: 'nakedPrice',
+        title: '裸车价',
+      },
+      {
+        dataIndex: 'insurance',
+        title: '保险',
+      },
+      {
+        dataIndex: 'purchaseTax',
+        title: '购置税',
+      },
+      {
+        dataIndex: 'landingPrice',
+        title: '落地行情价',
+      },
+    ];
+
+    const addCols = addKeyOptions
+      .filter(({ value }) => addKeys.includes(value))
+      .map((item) => ({
+        dataIndex: item.value,
+        title: item.label,
+      }));
+
+    return [...cols, ...addCols].map((item) => ({
+      ...item,
+      render: (v, _, index) => {
+        return (
+          <Space>
+            <Input
+              value={v}
+              style={{
+                width: '100%',
+              }}
+              size="mini"
+              onChange={(e) => {
+                handleTableChange(item.dataIndex, e, index);
+              }}
+            />
+            {item.title === '指导价' && (
+              <IconButton size="mini" onClick={() => findErrorText(v)}>
+                <IconRightCircle />
+              </IconButton>
+            )}
+            {item.dataIndex === 'monthChange' && (
+              <IconButton
+                size="mini"
+                onClick={(e) => {
+                  handleTableChange(item.dataIndex, (v * -1).toString(), index);
+                }}
+              >
+                <IconRefresh />
+              </IconButton>
+            )}
+          </Space>
+        );
+      },
+    }));
+  }, [addKeys, addKeyOptions]);
 
   return (
     <PageWrap
@@ -138,6 +145,9 @@ const CreateList = () => {
       ]}
       headExtra={
         <Space>
+          <Button onClick={transitionData} type="primary">
+            转换
+          </Button>
           <Dropdown
             droplist={
               <Menu
@@ -152,12 +162,9 @@ const CreateList = () => {
                   }}
                 >
                   <Checkbox.Group
-                    options={[
-                      {
-                        label: '环比变化',
-                        value: 'monthChange',
-                      },
-                    ]}
+                    value={addKeys}
+                    onChange={setAddKeys}
+                    options={addKeyOptions}
                   />
                 </div>
               </Menu>
@@ -169,16 +176,6 @@ const CreateList = () => {
               <IconSettings />
             </IconButton>
           </Dropdown>
-
-          <Radio.Group
-            type="button"
-            name="mode"
-            value={mode}
-            onChange={(e) => setMode(e)}
-          >
-            <Radio value="mac">mac</Radio>
-            <Radio value="win">windows</Radio>
-          </Radio.Group>
 
           <Button
             href="https://space.bilibili.com/171595001/channel/coµllectiondetail?sid=246260"
@@ -216,54 +213,14 @@ const CreateList = () => {
           }}
         >
           <Table<CarItem>
+            size="mini"
             data={list}
             rowKey={'brand'}
             pagination={false}
             style={{
-              minWidth: 2000,
+              minWidth: 1300,
             }}
-            columns={[
-              {
-                dataIndex: 'inventoryTime',
-                title: '盘点时间',
-              },
-              {
-                dataIndex: 'brand',
-                title: '品牌',
-              },
-              {
-                dataIndex: 'saleCount',
-                title: '销量',
-              },
-              {
-                dataIndex: 'model',
-                title: '车型',
-              },
-              {
-                dataIndex: 'guidePrice',
-                title: '指导价',
-              },
-              {
-                dataIndex: 'discount',
-                title: '优惠行情价',
-              },
-              {
-                dataIndex: 'nakedPrice',
-                title: '裸车价',
-              },
-              {
-                dataIndex: 'insurance',
-                title: '保险',
-              },
-              {
-                dataIndex: 'purchaseTax',
-                title: '购置税',
-              },
-              {
-                dataIndex: 'landingPrice',
-                title: '落地行情价',
-              },
-            ]}
+            columns={cols}
           />
         </div>
       </div>
