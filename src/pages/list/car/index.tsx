@@ -1,5 +1,6 @@
 import { Button, Drawer } from '@arco-design/web-react';
 import { IconPlus, IconRefresh } from '@arco-design/web-react/icon';
+import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
 import { FC, ReactElement, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,31 +10,22 @@ import PageWrap from '@/components/base/PageWrap';
 import Price from '@/components/base/Price';
 import ProTable from '@/components/proTable/ProTable';
 import { ProTableInstance } from '@/components/proTable/type';
+import request from '@/utils/request';
 import storage from '@/utils/storage';
 import to from '@/utils/to';
 
 type CarPageProps = any;
 const CarPage: FC<CarPageProps> = (): ReactElement => {
   const [selectedRow, setSelectedRow] = useState<CarItem[]>([]);
-
   const ref = useRef<ProTableInstance<CarItem>>({});
 
-  const updateRows = async () => {
-    // const [err, res] = await to(
-    //   updateList(
-    //     selectedRow.map((item) => {
-    //       return {
-    //         ...item,
-    //         inventoryTime: new Date('2022-03'),
-    //       };
-    //     }),
-    //   ),
-    // );
-
-    const vals = ref.current.getData?.();
-
-    console.log('👴2023-03-29 09:40:08 index.tsx line:17', vals);
-  };
+  const { data = [] } = useRequest(() =>
+    request<string[]>({
+      url: '/car/brand',
+      returnData: true,
+    }),
+  );
+  console.log('👴2023-04-03 21:38:18 index.tsx line:27', data);
 
   return (
     <PageWrap>
@@ -53,9 +45,9 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
           </Link>,
         ]}
         searchFormProps={{
-          onValuesChange({ inventoryTime }) {
-            if (inventoryTime) {
-              storage.set('inventoryTime', inventoryTime);
+          onValuesChange(target) {
+            if (Object.keys(target)[0] === 'inventoryTime') {
+              storage.set('inventoryTime', target.inventoryTime);
             }
           },
           initialValues: {
@@ -81,11 +73,16 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
             dataIndex: 'inventoryTime',
             valueType: 'dateMonth',
             search: true,
+            sorter: true,
           },
           {
             title: '品牌',
             dataIndex: 'brand',
             search: true,
+            filters: data.map((v) => ({
+              text: v,
+              value: v,
+            })),
           },
           {
             title: '型号',

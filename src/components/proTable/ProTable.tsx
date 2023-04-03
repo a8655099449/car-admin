@@ -43,9 +43,20 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
     } as PaginationProps,
     searchValues: searchFormProps?.initialValues || ({} as Partial<T>),
     sorter: defSorter,
+    filter: {},
   });
 
-  const tableSetting = useTableSetting<T>({ ...props });
+  const [_pagination, set_Pagination] = useState<PaginationProps>({
+    pageSize: defaultPageSize,
+    current: 1,
+  });
+  const tableSetting = useTableSetting<T>({
+    ...props,
+    pagination: {
+      ..._pagination,
+      ...(props.pagination as PaginationProps),
+    },
+  });
 
   const tableCols = useTableColumns(tableSetting._columns);
 
@@ -56,11 +67,6 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
   } = useTableRequest({
     request: props.request,
     searchRef: ref,
-  });
-
-  const [_pagination, set_Pagination] = useState<PaginationProps>({
-    pageSize: defaultPageSize,
-    current: 1,
   });
 
   const [tableSize, setTableSize] = useState<'mini' | 'small' | 'default' | 'middle'>(
@@ -109,6 +115,12 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
         size={tableSize}
         loading={loading}
         onChange={(pagination, sorter, filter, { action }) => {
+          console.log(action);
+          if (action === 'filter') {
+            ref.current.filter = filter;
+            run();
+          }
+
           if (action === 'sort') {
             const { direction, field } = sorter;
 

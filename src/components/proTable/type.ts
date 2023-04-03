@@ -27,6 +27,7 @@ export type TableRequest<T> =
       params: RequestParams,
       searchParams: Partial<T>,
       sorter: string,
+      filter: any,
     ) => Promise<{
       data: T[];
       success: boolean;
@@ -53,6 +54,7 @@ export type SearchRef<T> = React.MutableRefObject<{
   pagination: PaginationProps;
   searchValues: Partial<T>;
   sorter: string;
+  filter: any;
 }>;
 
 export type ProTableInstance<T = unknown> = Partial<{

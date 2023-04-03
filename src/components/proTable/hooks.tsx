@@ -1,4 +1,4 @@
-import { Badge } from '@arco-design/web-react';
+import { Badge, PaginationProps } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
@@ -12,50 +12,66 @@ import { ProTableColumnProps, ProTableProps, SearchRef, TableRequest } from './t
 export function useTableSetting<T>(props: ProTableProps<T>) {
   const { columns = [], showIndex, pagination } = props;
 
-  console.log('👴2023-03-28 15:17:12 hooks.tsx line:16', pagination);
   const cols = useMemo(() => {
-    const _columns = columns;
+    let _columns = columns;
 
-    if (showIndex && !_columns.some((item) => item.dataIndex === 'TableIndex')) {
-      _columns.unshift({
-        dataIndex: 'TableIndex',
-        title: '序号',
-        render(_, item, index) {
-          const rank = index + 1;
+    if (showIndex) {
+      const fix = _columns.findIndex((item) => item.dataIndex === 'TableIndex');
 
-          const rankColorMap = {
-            1: {
-              bg: 'rgb(var(--primary-6))',
-            },
-            2: {
-              bg: 'rgb(var(--primary-5))',
-            },
-            3: {
-              bg: 'rgb(var(--primary-4))',
-            },
-            4: {
-              bg: 'rgb(var(--primary-3))',
-            },
-            5: {
-              bg: 'rgb(var(--primary-2))',
-            },
-          };
+      if (fix >= 0) {
+        _columns.splice(fix, 1);
+      }
 
-          return (
-            <Badge
-              count={rank}
-              dotStyle={{
-                backgroundColor: rankColorMap[rank]?.bg || 'rgb(var(--primary-2))',
-                color: '#fff',
-              }}
-            />
-          );
+      _columns = [
+        {
+          dataIndex: 'TableIndex',
+          title: '序号',
+          render(_, item, index) {
+            const { pageSize = 20, current = 1 } = pagination as PaginationProps;
+
+            const rank = index + 1 + pageSize * (current - 1);
+
+            const rankColorMap = {
+              1: {
+                bg: 'rgb(var(--primary-6))',
+              },
+              2: {
+                bg: 'rgb(var(--primary-5))',
+              },
+              3: {
+                bg: 'rgb(var(--primary-4))',
+              },
+              4: {
+                bg: 'rgb(var(--primary-3))',
+              },
+              5: {
+                bg: 'rgb(var(--primary-2))',
+              },
+            };
+
+            return (
+              <span
+                style={{
+                  backgroundColor: rankColorMap[rank]?.bg || 'rgb(var(--primary-2))',
+                  color: '#fff',
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  fontSize: 12,
+                }}
+                className="flex-center"
+              >
+                {rank > 999 ? '999+' : rank}
+              </span>
+            );
+          },
         },
-      });
+        ..._columns,
+      ];
     }
 
     return _columns;
-  }, [columns]);
+  }, [columns, pagination]);
 
   const _selectCols = useMemo(() => {
     return cols.map((col) => {
@@ -111,11 +127,11 @@ export function useTableRequest<T>(params: {
     let _request: TableRequest<T> = undefined;
 
     if (typeof request === 'string') {
-      _request = async (params, searchValues, sorter) => {
+      _request = async (params, searchValues, sorter, filter) => {
         const res = await ajax<Pagination<T>>({
           url: request,
           method: 'GET',
-          params: { ...params, ...searchValues, sorter },
+          params: { ...params, ...searchValues, sorter, filter },
         });
         return {
           data: res.data.items,
@@ -138,6 +154,7 @@ export function useTableRequest<T>(params: {
         },
         searchRef.current.searchValues,
         searchRef.current.sorter,
+        searchRef.current.filter,
       ),
     );
 
