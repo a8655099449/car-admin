@@ -1,13 +1,14 @@
-import { DatePicker, Form, Input } from '@arco-design/web-react';
+import { DatePicker, Form, Input, InputNumber } from '@arco-design/web-react';
 import { ReactElement } from 'react';
 
 import { ProTableColumnProps } from './type';
 
 type SearchFormItemProps<T> = ProTableColumnProps<T> & {
   onEnter?: () => void;
+  type?: 'search' | 'edit';
 };
 function SearchFormItem<T>(props: SearchFormItemProps<T>): ReactElement {
-  const { dataIndex, title, valueType, onEnter } = props;
+  const { dataIndex, title, valueType, onEnter, type } = props;
 
   let Com: any = Input;
 
@@ -17,6 +18,9 @@ function SearchFormItem<T>(props: SearchFormItemProps<T>): ReactElement {
 
   if (valueType === 'dateMonth') {
     Com = DatePicker.MonthPicker;
+  }
+  if (valueType === 'number' && type === 'edit') {
+    Com = <InputNumber />;
   }
 
   return (

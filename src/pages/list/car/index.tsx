@@ -131,8 +131,40 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
               return <Price price={item} />;
             },
             defaultSortOrder: 'ascend',
+            filters: [
+              {
+                text: '5w-7w',
+                value: '50000,70000',
+              },
+              {
+                text: '7w-12w',
+                value: '70000,120000',
+              },
+              {
+                text: '12w-16w',
+                value: '120000,160000',
+              },
+              {
+                text: '16w-22w',
+                value: '160000,220000',
+              },
+              {
+                text: '22w-30w',
+                value: '220000,300000',
+              },
+              {
+                text: '>30w',
+                value: '300000,99900000',
+              },
+            ],
+            filterMultiple: false,
           },
         ]}
+        showHandle
+        method="post"
+        onEditRow={(item) => {
+          console.log('👴2023-04-05 18:42:07 index.tsx line:167', item);
+        }}
       />
     </PageWrap>
   );

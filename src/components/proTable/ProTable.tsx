@@ -1,23 +1,24 @@
 import { Empty, PaginationProps, Table } from '@arco-design/web-react';
-import {
-  forwardRef,
-  ForwardRefRenderFunction,
-  ReactElement,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ReactElement, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { DEFAULT_PAGE_SIZE, DEFAULT_REQUEST_DATE } from './defaultData';
-import { useTableColumns, useTableRequest, useTableSetting } from './hooks';
+import FormDrawer from './FormDrewer';
+import {
+  useFormDrawer,
+  useTableColumns,
+  useTableRequest,
+  useTableSetting,
+} from './hooks';
 import styles from './index.module.less';
 import SearchBar from './SearchBar';
 import ToolBar from './ToolBar';
-import { ProTableInstance, ProTableProps, SearchRef } from './type';
+import { ProTableProps, SearchRef } from './type';
 
 function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
   const { columns = [], data = [], pagination = {}, activeRef, searchFormProps } = props;
+  const [tableSize, setTableSize] = useState<'mini' | 'small' | 'default' | 'middle'>(
+    'default',
+  );
 
   const {
     defaultPageSize = DEFAULT_PAGE_SIZE,
@@ -25,6 +26,7 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
     pageSize,
     current,
   } = pagination as PaginationProps;
+  const formDrawerProps = useFormDrawer<T>(props);
 
   const defSorter = useMemo(() => {
     const f = columns.find((item) => item.defaultSortOrder);
@@ -51,7 +53,8 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
     current: 1,
   });
   const tableSetting = useTableSetting<T>({
-    ...props,
+    size: tableSize,
+    ...formDrawerProps,
     pagination: {
       ..._pagination,
       ...(props.pagination as PaginationProps),
@@ -67,11 +70,8 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
   } = useTableRequest({
     request: props.request,
     searchRef: ref,
+    method: props.method,
   });
-
-  const [tableSize, setTableSize] = useState<'mini' | 'small' | 'default' | 'middle'>(
-    'default',
-  );
 
   const getData = () => {
     return _data.data || data;
@@ -91,6 +91,9 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
   return (
     <div className={`${styles['pro-table']}`}>
       {columns?.length === 0 && <Empty description="need columns" />}
+
+      <FormDrawer {...formDrawerProps} />
+
       <SearchBar<T>
         {...props}
         onSearch={(e) => {

@@ -7,12 +7,13 @@ type RequestParams = {
   pageSize: number;
 };
 
-type ColumnValueType = 'text' | 'dateRange' | 'dateMonth';
+type ColumnValueType = 'text' | 'dateRange' | 'dateMonth' | 'number';
 // ColumnProps 参数
 export type ProTableColumnProps<T> = ColumnProps<T> &
   Partial<{
     search: boolean;
     valueType: ColumnValueType;
+    hideInHandleForm: boolean; // 在操作的表单中隐藏
   }>;
 
 export type TableSize = 'default' | 'mini' | 'small' | 'middle';
@@ -48,6 +49,9 @@ export type ProTableProps<T = unknown> = Omit<TableProps<T>, 'columns'> &
     onSearchValuesChange: (current: Partial<T>, searchValues: Partial<T>) => void;
     activeRef: React.MutableRefObject<ProTableInstance<T>>; // 可以获得实例的有些方法
     searchFormProps: FormProps<T>;
+    method: 'get' | 'post';
+    onEditRow(t: T): void;
+    onDeleteRow(t: T): void;
   }>;
 
 export type SearchRef<T> = React.MutableRefObject<{

@@ -1,7 +1,9 @@
-import { Badge, PaginationProps } from '@arco-design/web-react';
+import { Button, Form, PaginationProps, Popconfirm, Space } from '@arco-design/web-react';
+import { DeepPartial } from '@arco-design/web-react/es/Form/store';
+import { IconDelete, IconEdit } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { default as ajax } from '@/utils/request';
 import to from '@/utils/to';
@@ -9,12 +11,18 @@ import to from '@/utils/to';
 import { DEFAULT_PAGE_SIZE, DEFAULT_REQUEST_DATE } from './defaultData';
 import { ProTableColumnProps, ProTableProps, SearchRef, TableRequest } from './type';
 // useTableSetting 内置的一些setting操作
-export function useTableSetting<T>(props: ProTableProps<T>) {
-  const { columns = [], showIndex, pagination } = props;
-
+export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
   const cols = useMemo(() => {
+    const {
+      columns = [],
+      showIndex,
+      pagination,
+      showHandle,
+      onDeleteRow,
+      size,
+      handleEditRow,
+    } = props;
     let _columns = columns;
-
     if (showIndex) {
       const fix = _columns.findIndex((item) => item.dataIndex === 'TableIndex');
 
@@ -70,8 +78,47 @@ export function useTableSetting<T>(props: ProTableProps<T>) {
       ];
     }
 
+    if (showHandle) {
+      const fix = _columns.findIndex((item) => item.dataIndex === 'TABLE_HANDLE');
+
+      if (fix >= 0) {
+        _columns.splice(fix, 1);
+      }
+
+      _columns = [
+        ..._columns,
+        {
+          title: '操作',
+          dataIndex: 'TABLE_HANDLE',
+          render(_, target, i) {
+            return (
+              <Space>
+                <Button
+                  size={size === 'middle' ? 'large' : size}
+                  type="primary"
+                  shape="round"
+                  icon={<IconEdit />}
+                  onClick={() => {
+                    handleEditRow(target);
+                  }}
+                />
+                <Popconfirm title="是否确认删除？" onOk={() => onDeleteRow?.(target)}>
+                  <Button
+                    shape="round"
+                    type="secondary"
+                    icon={<IconDelete />}
+                    size={size === 'middle' ? 'large' : size}
+                  />
+                </Popconfirm>
+              </Space>
+            );
+          },
+        },
+      ];
+    }
+
     return _columns;
-  }, [columns, pagination]);
+  }, [props]);
 
   const _selectCols = useMemo(() => {
     return cols.map((col) => {
@@ -120,19 +167,28 @@ export function useTableColumns<T>(cols: ProTableColumnProps<T>[]) {
 export function useTableRequest<T>(params: {
   request: TableRequest<T> | string;
   searchRef: SearchRef<T>;
+  method?: 'post' | 'get';
 }) {
-  const { request, searchRef } = params;
+  const { request, searchRef, method } = params;
 
   return useRequest(async () => {
     let _request: TableRequest<T> = undefined;
 
     if (typeof request === 'string') {
       _request = async (params, searchValues, sorter, filter) => {
-        const res = await ajax<Pagination<T>>({
+        const options = {
           url: request,
-          method: 'GET',
+          method: method,
           params: { ...params, ...searchValues, sorter, filter },
-        });
+          data: { ...params, ...searchValues, sorter, filter },
+        } as any;
+
+        if (method === 'post') {
+          delete options.params;
+        }
+
+        const res = await ajax<Pagination<T>>(options);
+
         return {
           data: res.data.items,
           success: true,
@@ -164,4 +220,55 @@ export function useTableRequest<T>(params: {
 
     return res;
   });
+}
+
+export function useFormDrawer<T>(props: ProTableProps<T>) {
+  const { columns, onEditRow } = props;
+
+  const [mode, setMode] = useState<'add' | 'edit'>('add');
+
+  const [fromDrawerInstance] = Form.useForm<T>();
+
+  const [formDrawerShow, setFormDrawerShow] = useState(false);
+  const ref = useRef({
+    target: {} as Partial<T>,
+  });
+
+  // 点击关闭
+  const close = () => {
+    setFormDrawerShow(false);
+    ref.current.target = {};
+  };
+
+  const handleEditRow = (t: T) => {
+    ref.current.target = t;
+    setFormDrawerShow(true);
+    fromDrawerInstance.setFieldsValue(t as DeepPartial<T>);
+  };
+
+  // TODO 点击确定
+  const handleConfirm = async () => {
+    // const  value =
+    const value = await fromDrawerInstance.validate();
+
+    onEditRow?.({
+      ...ref.current.target,
+      ...value,
+    });
+
+    console.log(value);
+  };
+
+  const formColumns = columns?.filter((item) => !item.hideInHandleForm);
+
+  return {
+    ...props,
+    formDrawerShow,
+    fromDrawerInstance,
+    handleEditRow,
+    mode,
+    handleConfirm,
+    close,
+    formColumns,
+  };
 }
