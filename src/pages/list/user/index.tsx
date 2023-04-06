@@ -37,25 +37,11 @@ const UserList: FC<UserListProps> = (): ReactElement => {
             dataIndex: 'createTime',
             search: true,
             valueType: 'dateRange',
-          },
-          {
-            title: '操作',
-            search: false,
-            render(col, item, index) {
-              return (
-                <Space key={item.id}>
-                  <Button type="text">编辑</Button>
-                  <Button type="text">删除</Button>
-                </Space>
-              );
-            },
+            hideInHandleForm: true,
           },
         ]}
         rowKey={`id`}
-        pagination={{
-          pageSize: 10,
-          current: 1,
-        }}
+        showHandle
       />
     </PageWrap>
   );

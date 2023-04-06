@@ -7,6 +7,7 @@ const baseURL = `/api`;
 function request<T = any>(
   config: AxiosRequestConfig & {
     cacheTime?: number; // 缓存时间 , 默认都有一分钟的缓存，如果不要缓存则写0
+    returnData?: boolean;
   },
 ): Promise<
   {
@@ -15,6 +16,8 @@ function request<T = any>(
     [K: string]: any;
   } & T
 > {
+  const { returnData } = config;
+
   const instance = axios.create({
     // 公用的网络请求路径
     baseURL: baseURL,
@@ -47,6 +50,10 @@ function request<T = any>(
   // ! 响应拦截
   instance.interceptors.response.use(
     (res) => {
+      if (returnData) {
+        return res.data.data;
+      }
+
       return res.data;
     },
     (err) => {

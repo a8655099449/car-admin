@@ -29,7 +29,7 @@ const PageWrap: FC<PageWrapProps> = ({
       }}
     >
       {breadcrumb && (
-        <div style={{ marginBottom: 10 }} className="flex-center">
+        <div style={{ marginBottom: 10 }} className="flex-between">
           <Breadcrumb>
             {breadcrumb.map((item) => (
               <Breadcrumb.Item key={item.link}>
