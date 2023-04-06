@@ -19,11 +19,15 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
   const [selectedRow, setSelectedRow] = useState<CarItem[]>([]);
   const ref = useRef<ProTableInstance<CarItem>>({});
 
-  const { data = [] } = useRequest(() =>
-    request<string[]>({
-      url: '/car/brand',
-      returnData: true,
-    }),
+  const { data = [] } = useRequest(
+    () =>
+      request<string[]>({
+        url: '/car/brand',
+        returnData: true,
+      }),
+    {
+      manual: true,
+    },
   );
   console.log('👴2023-04-03 21:38:18 index.tsx line:27', data);
 
@@ -101,11 +105,13 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
               return <Price price={item} />;
             },
             sorter: true,
+            valueType: 'number',
           },
           {
             title: '优惠行情',
             dataIndex: 'discount',
             sorter: true,
+            valueType: 'number',
           },
           {
             title: '裸车价',
@@ -118,14 +124,17 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
             render(item) {
               return <Price price={item} unit={1000} />;
             },
+            valueType: 'number',
           },
           {
             title: '购置税',
             dataIndex: 'purchaseTax',
+            valueType: 'number',
           },
           {
             title: '落地价格',
             dataIndex: 'landingPrice',
+            valueType: 'number',
             sorter: true,
             render(item) {
               return <Price price={item} />;
@@ -161,7 +170,7 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
           },
         ]}
         showHandle
-        method="post"
+        method="get"
         onEditRow={(item) => {
           console.log('👴2023-04-05 18:42:07 index.tsx line:167', item);
         }}

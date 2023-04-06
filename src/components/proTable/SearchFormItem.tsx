@@ -20,7 +20,7 @@ function SearchFormItem<T>(props: SearchFormItemProps<T>): ReactElement {
     Com = DatePicker.MonthPicker;
   }
   if (valueType === 'number' && type === 'edit') {
-    Com = <InputNumber />;
+    Com = InputNumber;
   }
 
   return (

@@ -255,8 +255,6 @@ export function useFormDrawer<T>(props: ProTableProps<T>) {
       ...ref.current.target,
       ...value,
     });
-
-    console.log(value);
   };
 
   const formColumns = columns?.filter((item) => !item.hideInHandleForm);
