@@ -1,7 +1,6 @@
 import { Message } from '@arco-design/web-react';
 import { useLocalStorageState, useRequest } from 'ahooks';
 import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
 
 import { createList } from '@/api/car';
 import { trim } from '@/utils';
@@ -20,7 +19,9 @@ function useCarAdd() {
     'purchaseTax',
     'landingPrice',
   ];
-  const [list, setList] = useState<CarItem[]>([]);
+  const [list, setList] = useLocalStorageState<CarItem[]>('carAddList', {
+    defaultValue: [],
+  });
 
   const [text, setText] = useLocalStorageState('carAddText', {
     defaultValue: '',
@@ -57,7 +58,10 @@ function useCarAdd() {
               obj[keyArr[index]] = item;
             }
           });
-          textArr2.push(obj);
+
+          if (reg.test(obj.inventoryTime as string)) {
+            textArr2.push(obj);
+          }
         }
 
         list2 = [];
@@ -83,6 +87,7 @@ function useCarAdd() {
       if (res.code === 200) {
         Message.success('添加成功');
         setText('');
+        setList([]);
       }
     },
     {

@@ -10,6 +10,7 @@ import {
   Table,
 } from '@arco-design/web-react';
 import { IconRefresh, IconRightCircle, IconSettings } from '@arco-design/web-react/icon';
+import { useLocalStorageState } from 'ahooks';
 import { useMemo } from 'react';
 
 import PageWrap from '@/components/base/PageWrap';
@@ -133,6 +134,14 @@ const CreateList = () => {
       },
     }));
   }, [addKeys, addKeyOptions]);
+  const [errTime, setErrTime] = useLocalStorageState('errorAddTime', {
+    defaultValue: '227',
+  });
+
+  const handleErrTime = () => {
+    const reg = new RegExp(`\n${errTime}`, 'g');
+    setText(text.replace(reg, `\n${errTime[0]}${errTime[1]}.${errTime[2]}`));
+  };
 
   return (
     <PageWrap
@@ -145,6 +154,11 @@ const CreateList = () => {
       ]}
       headExtra={
         <Space>
+          <Button onClick={handleErrTime} type="primary">
+            时间纠错
+          </Button>
+          <Input placeholder="time" value={errTime} onChange={setErrTime} />
+
           <Button onClick={transitionData} type="primary">
             转换
           </Button>
@@ -200,7 +214,8 @@ const CreateList = () => {
             style={{
               height: 'calc(100vh - 180px)',
               marginBottom: 10,
-              width: 500,
+              width: 400,
+              marginRight: 10,
             }}
             value={text}
             onChange={(e) => setText(e)}
