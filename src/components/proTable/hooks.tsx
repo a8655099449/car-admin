@@ -1,4 +1,11 @@
-import { Button, Form, PaginationProps, Popconfirm, Space } from '@arco-design/web-react';
+import {
+  Button,
+  Form,
+  Message,
+  PaginationProps,
+  Popconfirm,
+  Space,
+} from '@arco-design/web-react';
 import { DeepPartial } from '@arco-design/web-react/es/Form/store';
 import { IconDelete, IconEdit } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
@@ -21,6 +28,7 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
       onDeleteRow,
       size,
       handleEditRow,
+      handleDeleteItem,
     } = props;
     let _columns = columns;
     if (showIndex) {
@@ -102,7 +110,10 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
                     handleEditRow(target);
                   }}
                 />
-                <Popconfirm title="是否确认删除？" onOk={() => onDeleteRow?.(target)}>
+                <Popconfirm
+                  title="是否确认删除？"
+                  onOk={() => handleDeleteItem?.(target)}
+                >
                   <Button
                     shape="round"
                     type="secondary"
@@ -222,8 +233,12 @@ export function useTableRequest<T>(params: {
   });
 }
 
-export function useFormDrawer<T>(props: ProTableProps<T>) {
-  const { columns, onEditRow } = props;
+export function useFormDrawer<T>(
+  props: ProTableProps<T> & {
+    run(): void;
+  },
+) {
+  const { columns, deleteOptions, update, run } = props;
 
   const [mode, setMode] = useState<'add' | 'edit'>('add');
 
@@ -245,16 +260,35 @@ export function useFormDrawer<T>(props: ProTableProps<T>) {
     setFormDrawerShow(true);
     fromDrawerInstance.setFieldsValue(t as DeepPartial<T>);
   };
+  // todo 删除某行
+  const handleDeleteItem = async (t: any) => {
+    if (deleteOptions) {
+      const { url, method = 'post' } = deleteOptions;
+      const [err] = await to(ajax({ url, method, params: t, data: t }));
+      if (!err) {
+        Message.success('删除成功');
+        run();
+        close();
+      }
+    }
+  };
 
   // TODO 点击确定
   const handleConfirm = async () => {
     // const  value =
     const value = await fromDrawerInstance.validate();
+    const item = { ...ref.current.target, ...value };
 
-    onEditRow?.({
-      ...ref.current.target,
-      ...value,
-    });
+    if (update) {
+      const { url, method = 'post' } = update;
+
+      const [err] = await to(ajax({ url, method, data: item }));
+      if (!err) {
+        Message.success('更新成功');
+      }
+      close();
+      run();
+    }
   };
 
   const formColumns = columns?.filter((item) => !item.hideInHandleForm);
@@ -268,5 +302,6 @@ export function useFormDrawer<T>(props: ProTableProps<T>) {
     handleConfirm,
     close,
     formColumns,
+    handleDeleteItem,
   };
 }

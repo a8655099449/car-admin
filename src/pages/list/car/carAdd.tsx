@@ -38,6 +38,10 @@ const CreateList = () => {
       label: '环比变化',
       value: 'monthChange',
     },
+    {
+      label: '位置',
+      value: 'position',
+    },
   ];
 
   const findErrorText = (key: string) => {
@@ -73,6 +77,7 @@ const CreateList = () => {
       {
         dataIndex: 'discount',
         title: '优惠行情价',
+        width: 150,
       },
       {
         dataIndex: 'nakedPrice',
@@ -233,7 +238,7 @@ const CreateList = () => {
             rowKey={'brand'}
             pagination={false}
             style={{
-              minWidth: 1300,
+              minWidth: 1500,
             }}
             columns={cols}
           />

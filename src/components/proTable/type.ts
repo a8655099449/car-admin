@@ -22,6 +22,11 @@ export type requestSorter = {
   [k in string]: 'ascend' | 'descend' | undefined;
 };
 
+export type HandleOptions = {
+  url: string;
+  method?: 'post' | 'get' | 'delete' | 'put';
+};
+
 //  table的请求参数
 export type TableRequest<T> =
   | ((
@@ -52,6 +57,8 @@ export type ProTableProps<T = unknown> = Omit<TableProps<T>, 'columns'> &
     method: 'get' | 'post';
     onEditRow(t: T): void;
     onDeleteRow(t: T): void;
+    update?: HandleOptions;
+    deleteOptions?: HandleOptions;
   }>;
 
 export type SearchRef<T> = React.MutableRefObject<{

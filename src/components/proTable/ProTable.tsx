@@ -26,7 +26,6 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
     pageSize,
     current,
   } = pagination as PaginationProps;
-  const formDrawerProps = useFormDrawer<T>(props);
 
   const defSorter = useMemo(() => {
     const f = columns.find((item) => item.defaultSortOrder);
@@ -47,6 +46,19 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
     sorter: defSorter,
     filter: {},
   });
+  const {
+    data: _data = DEFAULT_REQUEST_DATE,
+    run,
+    loading,
+  } = useTableRequest({
+    request: props.request,
+    searchRef: ref,
+    method: props.method,
+  });
+  const formDrawerProps = useFormDrawer<T>({
+    ...props,
+    run,
+  });
 
   const [_pagination, set_Pagination] = useState<PaginationProps>({
     pageSize: defaultPageSize,
@@ -62,16 +74,6 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
   });
 
   const tableCols = useTableColumns(tableSetting._columns);
-
-  const {
-    data: _data = DEFAULT_REQUEST_DATE,
-    run,
-    loading,
-  } = useTableRequest({
-    request: props.request,
-    searchRef: ref,
-    method: props.method,
-  });
 
   const getData = () => {
     return _data.data || data;

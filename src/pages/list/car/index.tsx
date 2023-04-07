@@ -174,6 +174,13 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
         onEditRow={(item) => {
           console.log('👴2023-04-05 18:42:07 index.tsx line:167', item);
         }}
+        update={{
+          method: 'post',
+          url: '/car/updateItem',
+        }}
+        deleteOptions={{
+          url: '/car/delete',
+        }}
       />
     </PageWrap>
   );
