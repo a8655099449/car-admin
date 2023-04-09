@@ -1,5 +1,10 @@
 import { Button, Checkbox, Dropdown, Menu, Space } from '@arco-design/web-react';
-import { IconOriginalSize, IconRefresh, IconSettings } from '@arco-design/web-react/icon';
+import {
+  IconOriginalSize,
+  IconPlus,
+  IconRefresh,
+  IconSettings,
+} from '@arco-design/web-react/icon';
 import { FC, ReactElement, ReactNode } from 'react';
 
 import IconButton from '../IconButton';
@@ -13,6 +18,7 @@ type ToolBarProps<T = unknown> = ReturnType<typeof useTableSetting<T>> &
     tableSize?: TableSize;
     onTableSizeChange?: (size: TableSize) => void;
     refreshLoading: boolean;
+    openFormDrawerShow(): void;
   };
 function ToolBar<T>({
   onRefresh,
@@ -24,6 +30,9 @@ function ToolBar<T>({
   setSelectCols,
   toolButtons,
   refreshLoading,
+  openFormDrawerShow,
+  hideToolButtons = [],
+  showHandle,
 }: ToolBarProps<T>): ReactElement {
   return (
     <div className={`${styles['toolbar']}`}>
@@ -31,6 +40,9 @@ function ToolBar<T>({
       <div>
         <Space>
           {toolButtons}
+          {showHandle && !hideToolButtons.includes('add') && (
+            <IconButton icon={<IconPlus />} type="primary" onClick={openFormDrawerShow} />
+          )}
           <IconButton onClick={() => onRefresh?.()}>
             <IconRefresh spin={refreshLoading} />
           </IconButton>

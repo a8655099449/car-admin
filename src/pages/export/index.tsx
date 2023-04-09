@@ -1,12 +1,12 @@
-import { copy2Clipboard, downloadFile } from '@/utils';
 import { Button, Input, Message, Table } from '@arco-design/web-react';
 import { FC, ReactElement, useMemo, useState } from 'react';
 
-interface IProps { }
-const ExportPage: FC<IProps> = (): ReactElement => {
+import { copy2Clipboard, downloadFile } from '@/utils';
 
-   // const List =  lazyload(`./pages/list/index.tsx`)
-   const [text, setText] = useState(`/marketingCenter/marketing/travelCard	出行卡管理	Travel card management
+const ExportPage: FC<any> = (): ReactElement => {
+  // const List =  lazyload(`./pages/list/index.tsx`)
+  const [text, setText] =
+    useState(`/marketingCenter/marketing/travelCard	出行卡管理	Travel card management
    /marketingCenter/marketing/travelCard	序号	Serial number
    /marketingCenter/marketing/travelCard	出行卡名称	Travel card name
    /marketingCenter/marketing/travelCard	业务类型	Type of business
@@ -38,104 +38,107 @@ const ExportPage: FC<IProps> = (): ReactElement => {
    /marketingCenter/marketing/travelCard	新增出行卡	New travel card
    /marketingCenter/marketing/travelCard	规则设置	Rule setting`);
 
-   const items = useMemo(() => {
+  const items = useMemo(() => {
+    const rows = text.split('\n');
 
-      const rows = text.split('\n')
+    const items = rows.map((item) => {
+      const [model, zh, en, other] = item.split('\t').map((i) => i.trim());
+      return { model, en: other || en, zh };
+    });
 
-      const items = rows.map(item => {
-         const [model, zh, en, other] = item.split('\t').map(i => i.trim())
-         return { model, en: other || en, zh }
+    return items;
+  }, [text]);
 
-      })
+  const handleExport = (t = 'download') => {
+    const map: any = {};
 
-      return items
+    const enMap = {
+      en: {},
+      zh: {},
+    };
 
-   }, [text])
-
-   const handleExport = (t = 'download') => {
-      const map: any = {}
-
-      const enMap = {
-         'en': {},
-         'zh': {}
+    items.forEach((item) => {
+      if (!map[item.model]) {
+        map[item.model] = [];
       }
+      map[item.model].push(item);
+    });
 
+    Object.keys(map).forEach((key) => {
+      map[key].forEach((item: any) => {
+        if (!enMap['en'][key]) {
+          enMap['en'][key] = {};
+        }
+        enMap['en'][key][item.zh] = item.en;
 
-      items.forEach(item => {
-         if (!map[item.model]) {
-            map[item.model] = []
-         }
-         map[item.model].push(item)
-      })
+        if (!enMap['zh'][key]) {
+          enMap['zh'][key] = {};
+        }
+        enMap['zh'][key][item.zh] = item.zh;
+      });
+    });
 
-      Object.keys(map).forEach(key => {
-         map[key].forEach((item: any) => {
+    const fileContext = JSON.stringify(enMap, null, 2);
+    if (t === 'copy') {
+      copy2Clipboard(fileContext);
+      Message.success('复制成功');
+      return;
+    }
 
-            if (!enMap['en'][key]) {
-               enMap['en'][key] = {}
-            }
-            enMap['en'][key][item.zh] = item.en
+    downloadFile('local.json', fileContext);
+  };
 
-            if (!enMap['zh'][key]) {
-               enMap['zh'][key] = {}
-            }
-            enMap['zh'][key][item.zh] = item.zh
-         })
-      })
-
-      const fileContext = JSON.stringify(enMap, null, 2)
-      if (t === 'copy') {
-         copy2Clipboard(fileContext)
-         Message.success('复制成功')
-         return
-      }
-
-      downloadFile('local.json', fileContext,)
-   }
-
-
-
-
-
-   return <div style={{ padding: 10 }}>
-      <Button onClick={() => handleExport()} type='primary' style={{
-         marginBottom: 10,
-         marginRight: 10
-      }}>导出</Button>
-      <Button onClick={() => handleExport('copy')} type='primary' style={{
-         marginBottom: 10
-      }}>复制</Button>
+  return (
+    <div style={{ padding: 10 }}>
+      <Button
+        onClick={() => handleExport()}
+        type="primary"
+        style={{
+          marginBottom: 10,
+          marginRight: 10,
+        }}
+      >
+        导出
+      </Button>
+      <Button
+        onClick={() => handleExport('copy')}
+        type="primary"
+        style={{
+          marginBottom: 10,
+        }}
+      >
+        复制
+      </Button>
 
       <Input.TextArea
-         style={{
-            height: 500,
-            marginBottom: 10
-         }}
-         value={text}
-         onChange={e => setText(e)}
+        style={{
+          height: 500,
+          marginBottom: 10,
+        }}
+        value={text}
+        onChange={(e) => setText(e)}
       />
 
       <Table
-         data={items}
-         pagination={false}
-         columns={[
-            {
-               dataIndex: "model",
-               title: "model"
-            },
-            {
-               dataIndex: "en",
-               title: "英文"
-            },
-            {
-               dataIndex: "zh",
-               title: "中文"
-            }
-         ]}
+        data={items}
+        pagination={false}
+        columns={[
+          {
+            dataIndex: 'model',
+            title: 'model',
+          },
+          {
+            dataIndex: 'en',
+            title: '英文',
+          },
+          {
+            dataIndex: 'zh',
+            title: '中文',
+          },
+        ]}
       />
-
-
-   </div>;
+    </div>
+  );
 };
 
 export default ExportPage;

@@ -5,8 +5,15 @@ import { useFormDrawer } from './hooks';
 import SearchFormItem from './SearchFormItem';
 
 function FormDrawer<T>(props: ReturnType<typeof useFormDrawer<T>>): ReactElement {
-  const { formDrawerShow, fromDrawerInstance, mode, handleConfirm, close, formColumns } =
-    props;
+  const {
+    formDrawerShow,
+    fromDrawerInstance,
+    mode,
+    handleConfirm,
+    close,
+    formColumns,
+    handleFormProps,
+  } = props;
 
   return (
     <Drawer
@@ -16,7 +23,7 @@ function FormDrawer<T>(props: ReturnType<typeof useFormDrawer<T>>): ReactElement
       onOk={handleConfirm}
       title={mode === 'add' ? '添加' : '编辑'}
     >
-      <Form form={fromDrawerInstance}>
+      <Form<T> {...handleFormProps} form={fromDrawerInstance}>
         {formColumns?.map((item) => (
           <SearchFormItem {...item} key={item.dataIndex} type="edit" />
         ))}

@@ -31,6 +31,10 @@ const CreateList = () => {
     inventoryTime,
     transitionData,
     handleTableChange,
+    ignoreRows,
+    setIgnoreRows,
+    regKey,
+    setRegKey,
   } = useCarAdd();
 
   const addKeyOptions = [
@@ -44,10 +48,13 @@ const CreateList = () => {
     },
   ];
 
-  const findErrorText = (key: string) => {
-    const reg = new RegExp(`\n${key}`);
+  const findErrorText = (key: string, insert = '') => {
+    const reg = new RegExp(key);
 
-    setText(text.replace(reg, ` ${key}`));
+    setText(text.replace(reg, `${key}\n${insert}\n`));
+    // setTimeout(() => {
+    //   transitionData();
+    // }, 500);
   };
 
   const cols = useMemo(() => {
@@ -104,41 +111,63 @@ const CreateList = () => {
         title: item.label,
       }));
 
-    return [...cols, ...addCols].map((item) => ({
+    const joinList = [...cols, ...addCols];
+
+    return joinList.map((item) => ({
       ...item,
       render: (v, _, index) => {
+        const { dataIndex } = item;
+
+        const red = () => {
+          if (
+            ['landingPrice', 'guidePrice', 'nakedPrice'].includes(dataIndex) &&
+            v < 40000
+          ) {
+            return 'red';
+          }
+
+          if (
+            !['品牌', '车型', '位置', '环比变化'].includes(item.title) &&
+            isNaN(parseInt(v))
+          ) {
+            return 'red';
+          }
+
+          if (item.title === '优惠行情价' && v > 2000) {
+            return '#ff9f27';
+          }
+
+          return undefined;
+        };
+
         return (
           <Space>
             <Input
               value={v}
               style={{
                 width: '100%',
+                borderColor: red(),
               }}
               size="mini"
               onChange={(e) => {
                 handleTableChange(item.dataIndex, e, index);
               }}
+              onPressEnter={() => {
+                if (item.title === '指导价') {
+                  findErrorText(`${list[index]['model']}\n${v}\n`, '0');
+                }
+              }}
             />
-            {item.title === '指导价' && (
+            {/* {item.title === '指导价' && (
               <IconButton size="mini" onClick={() => findErrorText(v)}>
                 <IconRightCircle />
               </IconButton>
-            )}
-            {item.dataIndex === 'monthChange' && (
-              <IconButton
-                size="mini"
-                onClick={(e) => {
-                  handleTableChange(item.dataIndex, (v * -1).toString(), index);
-                }}
-              >
-                <IconRefresh />
-              </IconButton>
-            )}
+            )} */}
           </Space>
         );
       },
     }));
-  }, [addKeys, addKeyOptions]);
+  }, [addKeys, addKeyOptions, text, list]);
   const [errTime, setErrTime] = useLocalStorageState('errorAddTime', {
     defaultValue: '227',
   });
@@ -154,7 +183,7 @@ const CreateList = () => {
       breadcrumb={[
         {
           title: '车辆列表',
-          link: '/list/car',
+          link: '/car',
         },
       ]}
       headExtra={
@@ -162,7 +191,10 @@ const CreateList = () => {
           <Button onClick={handleErrTime} type="primary">
             时间纠错
           </Button>
-          <Input placeholder="time" value={errTime} onChange={setErrTime} />
+
+          <Input placeholder="忽略" value={ignoreRows} onChange={setIgnoreRows} />
+
+          <Input placeholder="time" value={regKey} onChange={setRegKey} />
 
           <Button onClick={transitionData} type="primary">
             转换
@@ -224,6 +256,12 @@ const CreateList = () => {
             }}
             value={text}
             onChange={(e) => setText(e)}
+            onKeyDown={(event) => {
+              const keyCombination = event.ctrlKey;
+              if (keyCombination && event.key === 'Enter') {
+                transitionData();
+              }
+            }}
           />
         </div>
         <div

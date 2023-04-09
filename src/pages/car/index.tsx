@@ -1,7 +1,6 @@
 import { Button, Drawer } from '@arco-design/web-react';
 import { IconPlus, IconRefresh } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
-import dayjs from 'dayjs';
 import { FC, ReactElement, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -12,7 +11,6 @@ import ProTable from '@/components/proTable/ProTable';
 import { ProTableInstance } from '@/components/proTable/type';
 import request from '@/utils/request';
 import storage from '@/utils/storage';
-import to from '@/utils/to';
 
 type CarPageProps = any;
 const CarPage: FC<CarPageProps> = (): ReactElement => {
@@ -29,20 +27,27 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
       manual: true,
     },
   );
-  console.log('👴2023-04-03 21:38:18 index.tsx line:27', data);
+
+  const updateRows = () => {
+    console.log(selectedRow);
+
+    updateList(
+      selectedRow.map((item) => ({ ...item, inventoryTime: new Date('2022-11') })),
+    );
+  };
 
   return (
     <PageWrap>
       <ProTable<CarItem>
-        request={'/car/list'}
         rowKey={'id'}
         showIndex
         activeRef={ref}
+        baseRequestUrl="/car"
         toolButtons={[
-          // <Button key={'update'} icon={<IconRefresh />} onClick={updateRows}>
-          //   批量更新
-          // </Button>,
-          <Link to="/list/car/carAdd" key={'add'}>
+          <Button key={'update'} icon={<IconRefresh />} onClick={updateRows}>
+            批量更新
+          </Button>,
+          <Link to="/car/carAdd" key={'add'}>
             <Button type="primary" icon={<IconPlus />}>
               添加
             </Button>
@@ -170,16 +175,8 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
           },
         ]}
         showHandle
-        method="get"
-        onEditRow={(item) => {
-          console.log('👴2023-04-05 18:42:07 index.tsx line:167', item);
-        }}
-        update={{
+        queryPageOptions={{
           method: 'post',
-          url: '/car/updateItem',
-        }}
-        deleteOptions={{
-          url: '/car/delete',
         }}
       />
     </PageWrap>

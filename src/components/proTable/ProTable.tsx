@@ -51,9 +51,8 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
     run,
     loading,
   } = useTableRequest({
-    request: props.request,
+    ...props,
     searchRef: ref,
-    method: props.method,
   });
   const formDrawerProps = useFormDrawer<T>({
     ...props,
@@ -92,10 +91,7 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
 
   return (
     <div className={`${styles['pro-table']}`}>
-      {columns?.length === 0 && <Empty description="need columns" />}
-
       <FormDrawer {...formDrawerProps} />
-
       <SearchBar<T>
         {...props}
         onSearch={(e) => {
@@ -114,9 +110,12 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
         onTableSizeChange={setTableSize}
         tableSize={tableSize}
         refreshLoading={loading}
+        openFormDrawerShow={formDrawerProps.openFormDrawerShow}
       />
+      {columns?.length === 0 && <Empty description="need columns" />}
 
       <Table<T>
+        rowKey="id"
         size={tableSize}
         loading={loading}
         onChange={(pagination, sorter, filter, { action }) => {

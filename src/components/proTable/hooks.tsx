@@ -1,6 +1,7 @@
 import {
   Button,
   Form,
+  Image,
   Message,
   PaginationProps,
   Popconfirm,
@@ -16,7 +17,14 @@ import { default as ajax } from '@/utils/request';
 import to from '@/utils/to';
 
 import { DEFAULT_PAGE_SIZE, DEFAULT_REQUEST_DATE } from './defaultData';
-import { ProTableColumnProps, ProTableProps, SearchRef, TableRequest } from './type';
+import OptionsBar from './OptionsBar';
+import {
+  HandleOptions,
+  ProTableColumnProps,
+  ProTableProps,
+  SearchRef,
+  TableRequest,
+} from './type';
 // useTableSetting 内置的一些setting操作
 export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
   const cols = useMemo(() => {
@@ -25,11 +33,11 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
       showIndex,
       pagination,
       showHandle,
-      onDeleteRow,
       size,
       handleEditRow,
       handleDeleteItem,
     } = props;
+
     let _columns = columns;
     if (showIndex) {
       const fix = _columns.findIndex((item) => item.dataIndex === 'TableIndex');
@@ -128,6 +136,16 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
       ];
     }
 
+    _columns = _columns.map((item) => {
+      const { valueType } = item;
+      if (valueType === 'radioButton' && !item.render) {
+        item.render = (val) => {
+          return <OptionsBar options={item.options} value={val} />;
+        };
+      }
+      return item;
+    });
+
     return _columns;
   }, [props]);
 
@@ -175,21 +193,21 @@ export function useTableColumns<T>(cols: ProTableColumnProps<T>[]) {
   return _columns;
 }
 
-export function useTableRequest<T>(params: {
-  request: TableRequest<T> | string;
-  searchRef: SearchRef<T>;
-  method?: 'post' | 'get';
-}) {
-  const { request, searchRef, method } = params;
+export function useTableRequest<T>(
+  params: ProTableProps<T> & {
+    searchRef: SearchRef<T>;
+  },
+) {
+  const { request, searchRef, method, baseRequestUrl, queryPageOptions = {} } = params;
 
   return useRequest(async () => {
     let _request: TableRequest<T> = undefined;
 
-    if (typeof request === 'string') {
+    if (typeof request === 'string' || (request === undefined && baseRequestUrl)) {
       _request = async (params, searchValues, sorter, filter) => {
         const options = {
-          url: request,
-          method: method,
+          url: request || queryPageOptions.url || baseRequestUrl + '/queryPage',
+          method: method || queryPageOptions.method,
           params: { ...params, ...searchValues, sorter, filter },
           data: { ...params, ...searchValues, sorter, filter },
         } as any;
@@ -238,7 +256,7 @@ export function useFormDrawer<T>(
     run(): void;
   },
 ) {
-  const { columns, deleteOptions, update, run } = props;
+  const { columns, deleteOptions, update, run, baseRequestUrl, addOptions } = props;
 
   const [mode, setMode] = useState<'add' | 'edit'>('add');
 
@@ -253,17 +271,25 @@ export function useFormDrawer<T>(
   const close = () => {
     setFormDrawerShow(false);
     ref.current.target = {};
+    fromDrawerInstance.resetFields();
+    setMode('add');
+  };
+
+  const openFormDrawerShow = () => {
+    setFormDrawerShow(true);
   };
 
   const handleEditRow = (t: T) => {
     ref.current.target = t;
     setFormDrawerShow(true);
     fromDrawerInstance.setFieldsValue(t as DeepPartial<T>);
+    setMode('edit');
   };
   // todo 删除某行
   const handleDeleteItem = async (t: any) => {
     if (deleteOptions) {
-      const { url, method = 'post' } = deleteOptions;
+      const { url = baseRequestUrl + '/delete', method = 'post' } = deleteOptions;
+
       const [err] = await to(ajax({ url, method, params: t, data: t }));
       if (!err) {
         Message.success('删除成功');
@@ -279,15 +305,25 @@ export function useFormDrawer<T>(
     const value = await fromDrawerInstance.validate();
     const item = { ...ref.current.target, ...value };
 
-    if (update) {
-      const { url, method = 'post' } = update;
+    if (mode === 'edit') {
+      const { url = baseRequestUrl + '/update', method = 'post' } = update || {};
 
       const [err] = await to(ajax({ url, method, data: item }));
       if (!err) {
         Message.success('更新成功');
+        close();
+        run();
       }
-      close();
-      run();
+    }
+    if (mode === 'add') {
+      const { url = baseRequestUrl + '/add', method = 'post' } =
+        addOptions || ({} as HandleOptions);
+      const [err] = await to(ajax({ url, method, data: item }));
+      if (!err) {
+        Message.success('添加成功');
+        close();
+        run();
+      }
     }
   };
 
@@ -303,5 +339,6 @@ export function useFormDrawer<T>(
     close,
     formColumns,
     handleDeleteItem,
+    openFormDrawerShow,
   };
 }

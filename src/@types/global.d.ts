@@ -52,3 +52,21 @@ namespace window {
   const BMapGL: unknown;
   const BMapLib: unknown;
 }
+interface BrandItem {
+  id: number;
+  createTime: string;
+  updateTime: string;
+  icon: string;
+  name: string;
+  make: string;
+}
+
+interface Model {
+  id: number;
+  createTime: string;
+  updateTime: string;
+  image: string;
+  name: string;
+  brandId: number;
+  brand: BrandItem;
+}

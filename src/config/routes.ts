@@ -6,7 +6,7 @@ const routes: RouteItem[] = [
   },
   {
     path: '/list',
-    name: '列表',
+    name: '用户管理',
     icon: 'IconList',
     children: [
       {
@@ -14,25 +14,32 @@ const routes: RouteItem[] = [
         name: '用户列表',
         icon: 'IconUserGroup',
       },
+    ],
+  },
+  {
+    path: '/car',
+    name: '百车盘点',
+    icon: 'IconCompass',
+    children: [
       {
-        path: '/list/car',
-        name: '百车盘点',
+        path: '/car',
+        name: '按月盘点',
         icon: 'IconSend',
       },
       {
-        path: '/list/car/map',
-        name: '地图',
-        icon: 'IconSend',
-      },
-      {
-        path: '/list/car/huaiAn',
-        name: '淮安地图',
-        icon: 'IconSend',
-      },
-      {
-        path: '/list/car/carAdd',
+        path: '/car/carAdd',
         name: '新增',
         hideInMenu: true,
+      },
+      {
+        path: '/car/brand',
+        name: '品牌管理',
+        icon: 'IconBrush',
+      },
+      {
+        path: '/car/model',
+        name: '车系管理',
+        icon: 'IconBrush',
       },
     ],
   },

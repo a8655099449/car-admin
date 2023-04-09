@@ -10,17 +10,6 @@ const UserList: FC<UserListProps> = (): ReactElement => {
   return (
     <PageWrap>
       <ProTable<UserInfo>
-        request={async (q, s) => {
-          const { data } = await userListAPI({
-            ...q,
-            ...s,
-          });
-          return {
-            data: data.items,
-            success: true,
-            total: data.total,
-          };
-        }}
         columns={[
           {
             title: '名字',
@@ -42,6 +31,8 @@ const UserList: FC<UserListProps> = (): ReactElement => {
         ]}
         rowKey={`id`}
         showHandle
+        baseRequestUrl="/user"
+        hideToolButtons={['add']}
       />
     </PageWrap>
   );

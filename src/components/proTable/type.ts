@@ -7,13 +7,27 @@ type RequestParams = {
   pageSize: number;
 };
 
-type ColumnValueType = 'text' | 'dateRange' | 'dateMonth' | 'number';
+type ColumnValueType =
+  | 'text'
+  | 'dateRange'
+  | 'dateMonth'
+  | 'number'
+  | 'radioButton'
+  | 'select'
+  | 'image';
 // ColumnProps 参数
 export type ProTableColumnProps<T> = ColumnProps<T> &
   Partial<{
     search: boolean;
     valueType: ColumnValueType;
     hideInHandleForm: boolean; // 在操作的表单中隐藏
+    formProps?: {
+      required?: boolean;
+    };
+    options: {
+      label: any;
+      value: any;
+    }[];
   }>;
 
 export type TableSize = 'default' | 'mini' | 'small' | 'middle';
@@ -23,7 +37,7 @@ export type requestSorter = {
 };
 
 export type HandleOptions = {
-  url: string;
+  url?: string;
   method?: 'post' | 'get' | 'delete' | 'put';
 };
 
@@ -59,6 +73,11 @@ export type ProTableProps<T = unknown> = Omit<TableProps<T>, 'columns'> &
     onDeleteRow(t: T): void;
     update?: HandleOptions;
     deleteOptions?: HandleOptions;
+    addOptions?: HandleOptions;
+    queryPageOptions?: HandleOptions;
+    baseRequestUrl?: string;
+    handleFormProps: FormProps<T>;
+    hideToolButtons: Array<'reload' | 'resize' | 'ctrlRows' | 'add'>;
   }>;
 
 export type SearchRef<T> = React.MutableRefObject<{
@@ -72,3 +91,8 @@ export type ProTableInstance<T = unknown> = Partial<{
   getData: () => T[];
   reload: () => void;
 }>;
+
+export type Option = {
+  value: any;
+  label: any;
+};
