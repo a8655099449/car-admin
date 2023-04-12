@@ -1,6 +1,6 @@
 import { Image } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
-import { ReactElement } from 'react';
+import { ReactElement, useMemo } from 'react';
 
 import PageWrap from '@/components/base/PageWrap';
 import ProTable from '@/components/proTable/ProTable';
@@ -19,6 +19,35 @@ function Model(): ReactElement {
       },
     }),
   );
+  const { data: brandTexts } = useRequest(() =>
+    request<{ brand: string }[]>({
+      url: '/car/brandText',
+    }),
+  );
+  const { data: models } = useRequest(
+    () =>
+      request<Pagination<Model>>({
+        url: '/car/model/queryPage',
+        params: {
+          page: 1,
+          pageSize: 999,
+        },
+      }),
+    {
+      pollingInterval: 3000,
+    },
+  );
+
+  const modelOps = useMemo(() => {
+    const names = models?.data.items.map((it) => it.name);
+
+    return brandTexts?.data
+      .filter((item) => !names?.includes(item.brand))
+      .map((item) => ({
+        value: item.brand,
+        label: item.brand,
+      }));
+  }, [models, brandTexts]);
 
   return (
     <PageWrap>
@@ -26,12 +55,46 @@ function Model(): ReactElement {
         title={'车系管理'}
         columns={[
           {
+            title: '车标',
+            dataIndex: 'brandImage',
+            hideInHandleForm: true,
+            render(src, item) {
+              return (
+                <div
+                  style={{
+                    width: 80,
+                    height: 80,
+                    border: '1px solid #ccc',
+                    borderRadius: 4,
+                    padding: 3,
+                    backgroundColor: '#eee',
+                  }}
+                >
+                  <Image
+                    src={item.brand.icon}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  />
+                </div>
+              );
+            },
+          },
+
+          {
             title: '名称',
             dataIndex: 'name',
             formProps: {
               required,
+              allowCreate: true,
             },
             search: true,
+            valueType: 'select',
+            options: modelOps,
+            render(col) {
+              return col;
+            },
           },
           {
             title: '图片',
@@ -55,14 +118,15 @@ function Model(): ReactElement {
               value: item.id,
               label: item.name,
             })),
-            valueType: 'select',
+            valueType: 'radioButton',
             formProps: {
               required,
+              allowCreate: true,
             },
             render(_, item) {
               return item.brand?.name;
             },
-            search: true,
+            // search: true,
           },
           {
             title: '类型',

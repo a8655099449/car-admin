@@ -264,7 +264,7 @@ export function useFormDrawer<T>(
 
   const [formDrawerShow, setFormDrawerShow] = useState(false);
   const ref = useRef({
-    target: {} as Partial<T>,
+    target: {} as any,
   });
 
   // 点击关闭
@@ -286,16 +286,16 @@ export function useFormDrawer<T>(
     setMode('edit');
   };
   // todo 删除某行
-  const handleDeleteItem = async (t: any) => {
-    if (deleteOptions) {
-      const { url = baseRequestUrl + '/delete', method = 'post' } = deleteOptions;
+  const handleDeleteItem = async (t: T) => {
+    const { deleteOptions = {} } = props;
 
-      const [err] = await to(ajax({ url, method, params: t, data: t }));
-      if (!err) {
-        Message.success('删除成功');
-        run();
-        close();
-      }
+    const { url = baseRequestUrl + '/delete', method = 'post' } = deleteOptions;
+
+    const [err] = await to(ajax({ url, method, params: t, data: t }));
+    if (!err) {
+      Message.success('删除成功');
+      run();
+      close();
     }
   };
 
@@ -303,7 +303,11 @@ export function useFormDrawer<T>(
   const handleConfirm = async () => {
     // const  value =
     const value = await fromDrawerInstance.validate();
-    const item = { ...ref.current.target, ...value };
+    const item = { ...value } as any;
+
+    if (ref.current.target?.id) {
+      item.id = ref.current.target.id;
+    }
 
     if (mode === 'edit') {
       const { url = baseRequestUrl + '/update', method = 'post' } = update || {};

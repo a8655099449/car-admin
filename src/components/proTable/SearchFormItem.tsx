@@ -22,7 +22,9 @@ function SearchFormItem<T>(props: SearchFormItemProps<T>): ReactElement {
   }
 
   let Com: any = Input;
-  const otherProps: any = {};
+  const otherProps: any = {
+    ...formProps,
+  };
 
   if (valueType === 'dateRange') {
     Com = DatePicker.RangePicker;
