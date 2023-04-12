@@ -69,4 +69,5 @@ interface Model {
   name: string;
   brandId: number;
   brand: BrandItem;
+  type: 'sedan' | 'suv';
 }

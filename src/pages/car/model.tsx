@@ -1,8 +1,10 @@
+import { Image } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
 import { ReactElement } from 'react';
 
 import PageWrap from '@/components/base/PageWrap';
 import ProTable from '@/components/proTable/ProTable';
+import { carTypeOptions } from '@/utils/enums';
 import request from '@/utils/request';
 
 function Model(): ReactElement {
@@ -29,10 +31,22 @@ function Model(): ReactElement {
             formProps: {
               required,
             },
+            search: true,
           },
           {
             title: '图片',
             dataIndex: 'image',
+            render(col, item, index) {
+              return (
+                <Image
+                  src={col}
+                  style={{
+                    width: 150,
+                    height: 100,
+                  }}
+                />
+              );
+            },
           },
           {
             title: '车辆品牌',
@@ -48,10 +62,23 @@ function Model(): ReactElement {
             render(_, item) {
               return item.brand?.name;
             },
+            search: true,
+          },
+          {
+            title: '类型',
+            dataIndex: 'type',
+            valueType: 'radioButton',
+            options: carTypeOptions,
+            search: true,
           },
         ]}
         showHandle
         baseRequestUrl="/car/model"
+        handleFormProps={{
+          initialValues: {
+            type: 'sedan',
+          },
+        }}
       />
     </PageWrap>
   );

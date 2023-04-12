@@ -8,19 +8,16 @@ import {
   Message,
 } from '@arco-design/web-react';
 import { IconClockCircle, IconLock, IconUser } from '@arco-design/web-react/icon';
-import axios from 'axios';
 import React, { useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { loginApi } from '@/api/user';
-import { USER_INFO } from '@/config/localKeys';
+import Head from '@/components/base/Head';
 import { getContext } from '@/context/BaseContext';
 import { md5, wait } from '@/utils';
-import { isDev } from '@/utils/is';
 import storage from '@/utils/storage';
 import { useQuery } from '@/utils/use';
 import useLocale from '@/utils/useLocale';
-import useStorage from '@/utils/useStorage';
 
 import styles from './index.module.less';
 import i18n from './locale';
@@ -60,6 +57,9 @@ export default function login() {
   const required = true;
   return (
     <div className={`${styles['login']}`}>
+      <Head>
+        <title> {status == 0 ? '登录' : '注册'} </title>
+      </Head>
       <div className={`${styles['login-box']}`}>
         {status === 1 && <Register back={() => setStatus(0)} />}
         {status === 0 && (

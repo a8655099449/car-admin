@@ -1,4 +1,9 @@
-import { FormProps, PaginationProps, TableProps } from '@arco-design/web-react';
+import {
+  FormProps,
+  PaginationProps,
+  SelectProps,
+  TableProps,
+} from '@arco-design/web-react';
 import { ColumnProps } from '@arco-design/web-react/es/Table';
 import { ReactElement } from 'react';
 
@@ -16,14 +21,19 @@ type ColumnValueType =
   | 'select'
   | 'image';
 // ColumnProps 参数
+
+type ReverseStringNumber<T> = T extends string ? number : string;
+
 export type ProTableColumnProps<T> = ColumnProps<T> &
   Partial<{
     search: boolean;
     valueType: ColumnValueType;
     hideInHandleForm: boolean; // 在操作的表单中隐藏
-    formProps?: {
-      required?: boolean;
-    };
+    formProps?: Partial<
+      {
+        required?: boolean;
+      } & SelectProps
+    >;
     options: {
       label: any;
       value: any;
