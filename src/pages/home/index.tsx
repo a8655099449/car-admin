@@ -1,4 +1,4 @@
-import { Button, Upload } from '@arco-design/web-react';
+import { Button, Divider, Space, Upload } from '@arco-design/web-react';
 import { UploadItem } from '@arco-design/web-react/es/Upload';
 import { useRequest } from 'ahooks';
 import CryptoJS from 'crypto-js';
@@ -88,13 +88,26 @@ const HomePage: FC<HomePageProps> = (): ReactElement => {
         }}
         directory // 上传文件夹
       />
-      <Button
-        onClick={() => handleUpload(file[0])}
-        style={{ marginTop: 20 }}
-        type="primary"
-      >
-        开始上传
-      </Button>
+      <Divider />
+      <Space>
+        <Button onClick={() => handleUpload(file[0])} type="primary">
+          开始上传
+        </Button>
+
+        <Button
+          type="primary"
+          onClick={async () => {
+            const res = await request({
+              baseURL: '/rl',
+              url: '/fshare/v3/chat-session/get/filelist?container=1606410&s=0&n=20',
+            });
+
+            console.log('👴2023-04-19 17:27:35 index.tsx line:105', res);
+          }}
+        >
+          请求测试
+        </Button>
+      </Space>
     </div>
   );
 };

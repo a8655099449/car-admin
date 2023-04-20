@@ -12,44 +12,32 @@ import { ProTableInstance } from '@/components/proTable/type';
 import request from '@/utils/request';
 import storage from '@/utils/storage';
 
+import BatchUpdate from './BatchUpdate';
+import useBatchUpdate from './useBatchUpdate';
+
 type CarPageProps = any;
 const CarPage: FC<CarPageProps> = (): ReactElement => {
-  const [selectedRow, setSelectedRow] = useState<CarItem[]>([]);
   const ref = useRef<ProTableInstance<CarItem>>({});
 
-  const { data = [] } = useRequest(
-    () =>
-      request<string[]>({
-        url: '/car/brand',
-        returnData: true,
-      }),
-    {
-      manual: true,
-    },
-  );
+  const batch = useBatchUpdate();
 
-  const updateRows = () => {
-    console.log(selectedRow);
-
-    updateList(
-      selectedRow.map((item) => ({ ...item, inventoryTime: new Date('2022-11') })),
-    );
-  };
+  const { selectedRow, setSelectedRow } = batch;
 
   return (
     <PageWrap>
+      <BatchUpdate {...batch} />
       <ProTable<CarItem>
         rowKey={'id'}
         showIndex
         activeRef={ref}
         baseRequestUrl="/car"
         toolButtons={[
-          <Button key={'update'} icon={<IconRefresh />} onClick={updateRows}>
+          <Button key={'update'} icon={<IconRefresh />} onClick={batch.open}>
             批量更新
           </Button>,
           <Link to="/car/carAdd" key={'add'}>
             <Button type="primary" icon={<IconPlus />}>
-              添加
+              批量添加
             </Button>
           </Link>,
         ]}
@@ -88,10 +76,6 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
             title: '品牌',
             dataIndex: 'brand',
             search: true,
-            filters: data.map((v) => ({
-              text: v,
-              value: v,
-            })),
           },
           {
             title: '型号',

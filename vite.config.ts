@@ -33,16 +33,10 @@ export default ({ command }: ConfigEnv): UserConfigExport => ({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      '/oss': {
-        target: 'http://zugcpublish.cztv.com/',
+      '/rl': {
+        target: 'https://xtbg.ydpt.tech',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/oss/, ''),
-      },
-      '/loadOss': {
-        // target: 'http://kuangw.oss-cn-beijing.aliyuncs.com',
-        target: 'https://zjs-ugc.oss-cn-hangzhou.aliyuncs.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/loadOss/, ''),
+        rewrite: (path) => path.replace(/^\/rl/, ''),
       },
     },
   },
