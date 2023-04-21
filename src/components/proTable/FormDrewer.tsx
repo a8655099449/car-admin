@@ -25,7 +25,12 @@ function FormDrawer<T>(props: ReturnType<typeof useFormDrawer<T>>): ReactElement
     >
       <Form<T> {...handleFormProps} form={fromDrawerInstance}>
         {formColumns?.map((item) => (
-          <SearchFormItem {...item} key={item.dataIndex} type="edit" />
+          <SearchFormItem
+            {...item}
+            key={item.dataIndex}
+            type="edit"
+            onEnter={handleConfirm}
+          />
         ))}
       </Form>
     </Drawer>
