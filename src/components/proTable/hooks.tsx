@@ -138,7 +138,7 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
 
     _columns = _columns.map((item) => {
       const { valueType } = item;
-      if (valueType === 'radioButton' && !item.render) {
+      if (['radioButton', 'select'].includes(valueType || '') && !item.render) {
         item.render = (val) => {
           return <OptionsBar options={item.options} value={val} />;
         };
@@ -150,12 +150,14 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
   }, [props]);
 
   const _selectCols = useMemo(() => {
-    return cols.map((col) => {
-      return {
-        label: col.title,
-        value: col.dataIndex,
-      };
-    });
+    return cols
+      .filter((item) => !item.hideInTable)
+      .map((col) => {
+        return {
+          label: col.title,
+          value: col.dataIndex,
+        };
+      });
   }, [cols]);
 
   const [selectCols, setSelectCols] = useState(_selectCols.map((col) => col.value));
@@ -170,22 +172,24 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
 // useTableColumns 主要作用是修改Table的columns的渲染方式
 export function useTableColumns<T>(cols: ProTableColumnProps<T>[]) {
   const _columns = useMemo(() => {
-    const _cols = cols?.map((col) => {
-      const { valueType, render } = col;
+    const _cols = cols
+      ?.filter((item) => !item.hideInTable)
+      ?.map((col) => {
+        const { valueType, render } = col;
 
-      if (!render && valueType === 'dateRange') {
-        col.render = (value) => {
-          return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
-        };
-      }
-      if (!render && valueType === 'dateMonth') {
-        col.render = (value) => {
-          return dayjs(value).format('YYYY年MM月');
-        };
-      }
+        if (!render && valueType === 'dateRange') {
+          col.render = (value) => {
+            return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+          };
+        }
+        if (!render && valueType === 'dateMonth') {
+          col.render = (value) => {
+            return dayjs(value).format('YYYY年MM月');
+          };
+        }
 
-      return col;
-    });
+        return col;
+      });
 
     return _cols;
   }, [cols]);

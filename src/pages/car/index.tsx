@@ -1,4 +1,4 @@
-import { Button, Drawer } from '@arco-design/web-react';
+import { Button, Drawer, Message } from '@arco-design/web-react';
 import { IconPlus, IconRefresh } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
 import { FC, ReactElement, useRef, useState } from 'react';
@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { updateList } from '@/api/car';
 import PageWrap from '@/components/base/PageWrap';
 import Price from '@/components/base/Price';
+import WaitButton from '@/components/base/WaitButton';
 import ProTable from '@/components/proTable/ProTable';
 import { ProTableInstance } from '@/components/proTable/type';
 import request from '@/utils/request';
@@ -23,6 +24,13 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
 
   const { selectedRow, setSelectedRow } = batch;
 
+  const autoTitle = async () => {
+    const res = await request<number>({
+      url: '/car/autoMatchModel',
+    });
+    Message.info(`更新了${res.data}条数据`);
+  };
+
   return (
     <PageWrap>
       <BatchUpdate {...batch} />
@@ -32,6 +40,10 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
         activeRef={ref}
         baseRequestUrl="/car"
         toolButtons={[
+          <WaitButton key={`auto`} onClick={autoTitle}>
+            自动匹配标题
+          </WaitButton>,
+
           <Button key={'update'} icon={<IconRefresh />} onClick={batch.open}>
             批量更新
           </Button>,
@@ -76,6 +88,21 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
             title: '品牌',
             dataIndex: 'brand',
             search: true,
+          },
+
+          {
+            title: '品牌归属',
+            dataIndex: 'modelId',
+            valueType: 'select',
+            options: [
+              {
+                label: '未归属',
+                value: '-1',
+              },
+            ],
+            hideInHandleForm: true,
+            search: true,
+            hideInTable: true,
           },
           {
             title: '型号',

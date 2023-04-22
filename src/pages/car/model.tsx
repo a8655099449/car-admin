@@ -24,30 +24,6 @@ function Model(): ReactElement {
       url: '/car/brandText',
     }),
   );
-  const { data: models } = useRequest(
-    () =>
-      request<Pagination<Model>>({
-        url: '/car/model/queryPage',
-        params: {
-          page: 1,
-          pageSize: 999,
-        },
-      }),
-    {
-      pollingInterval: 3000,
-    },
-  );
-
-  const modelOps = useMemo(() => {
-    const names = models?.data.items.map((it) => it.name);
-
-    return brandTexts?.data
-      .filter((item) => !names?.includes(item.brand))
-      .map((item) => ({
-        value: item.brand,
-        label: item.brand,
-      }));
-  }, [models, brandTexts]);
 
   return (
     <PageWrap>
@@ -87,11 +63,8 @@ function Model(): ReactElement {
             dataIndex: 'name',
             formProps: {
               required,
-              allowCreate: true,
             },
             search: true,
-            valueType: 'select',
-            options: modelOps,
             render(col) {
               return col;
             },

@@ -22,13 +22,12 @@ type ColumnValueType =
   | 'image';
 // ColumnProps 参数
 
-type ReverseStringNumber<T> = T extends string ? number : string;
-
 export type ProTableColumnProps<T> = ColumnProps<T> &
   Partial<{
     search: boolean;
     valueType: ColumnValueType;
     hideInHandleForm: boolean; // 在操作的表单中隐藏
+    hideInTable: boolean; // 在table中隐藏
     formProps?: Partial<
       {
         required?: boolean;
