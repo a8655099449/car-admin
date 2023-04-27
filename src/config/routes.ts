@@ -36,10 +36,22 @@ const routes: RouteItem[] = [
         name: '品牌管理',
         icon: 'IconBrush',
       },
+
       {
         path: '/car/model',
         name: '车系管理',
         icon: 'IconBrush',
+      },
+      {
+        path: '/car/card',
+        name: '车辆卡片',
+        icon: 'IconIdcard',
+      },
+      {
+        path: '/car/cardDetail',
+        name: '车辆卡片',
+        icon: 'IconIdcard',
+        hideInMenu: true,
       },
     ],
   },

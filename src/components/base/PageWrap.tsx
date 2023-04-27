@@ -2,6 +2,8 @@ import { Breadcrumb } from '@arco-design/web-react';
 import { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 
+import Head from './Head';
+
 type PageWrapProps = Partial<{
   title: ReactElement | string;
   breadcrumb: {
@@ -28,6 +30,10 @@ const PageWrap: FC<PageWrapProps> = ({
         minHeight: `calc(100vh - 104px)`,
       }}
     >
+      <Head>
+        <title>{title}</title>
+      </Head>
+
       {breadcrumb && (
         <div style={{ marginBottom: 10 }} className="flex-between">
           <Breadcrumb>
