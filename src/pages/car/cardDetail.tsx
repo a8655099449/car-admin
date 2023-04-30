@@ -1,7 +1,8 @@
-import { Descriptions, Image, Spin } from '@arco-design/web-react';
+import { Descriptions, Grid, Image, Spin } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
 import React, { useMemo } from 'react';
 
+import LineChartCard from '@/components/base/LineChartCard';
 import PageWrap from '@/components/base/PageWrap';
 import request from '@/utils/request';
 import { useQuery } from '@/utils/use';
@@ -13,6 +14,9 @@ interface RequestData {
   id: number;
   name: string;
   items: Item[];
+  saleCount: number;
+  guidePrice: number;
+  landingPrice: number;
 }
 
 interface Item {
@@ -36,26 +40,91 @@ const CardDetail = () => {
   );
 
   const _data = useMemo(() => data?.data, [data]);
+  console.log('👴2023-04-29 11:40:52 cardDetail.tsx line:40', _data);
 
   return (
     <PageWrap title={_data?.name} showTitle>
-      <Spin loading={loading}>
-        <div>
+      <Spin
+        loading={loading}
+        style={{
+          width: '100%',
+        }}
+      >
+        <div
+          className="flex-between"
+          style={{
+            justifyContent: 'flex-start',
+            width: '100%',
+            paddingLeft: 100,
+          }}
+        >
           <div>
             <Image src={_data?.image} />
           </div>
 
-          <div>
+          <div
+            style={{
+              paddingLeft: 150,
+            }}
+          >
             <Descriptions
+              column={1}
               data={[
+                {
+                  label: '厂商',
+                  value: (
+                    <div className="flex-center">
+                      {_data?.icon && (
+                        <img
+                          src={_data?.icon}
+                          alt={_data.brandName}
+                          style={{
+                            width: 30,
+                            height: 30,
+                            marginRight: 5,
+                          }}
+                        />
+                      )}
+                      {_data?.brandName}
+                    </div>
+                  ),
+                },
                 {
                   label: '月均销量',
                   value: _data?.saleCount,
                 },
+                {
+                  label: '厂商推荐价',
+                  value: _data?.guidePrice,
+                },
+                {
+                  label: '月均落地价格',
+                  value: _data?.landingPrice,
+                },
               ]}
+              border
             />
           </div>
         </div>
+
+        <Grid.Row gutter={24}>
+          <Grid.Col span={12} style={{ marginBottom: 20 }}>
+            <LineChartCard
+              title="优惠价格走势"
+              xData={_data?.items.map((item) => item.inventoryTime)}
+              yData={_data?.items.map((item) => item.discount)}
+            />
+          </Grid.Col>
+          <Grid.Col span={12} style={{ marginBottom: 20 }}>
+            <LineChartCard />
+          </Grid.Col>
+          <Grid.Col span={12} style={{ marginBottom: 20 }}>
+            <LineChartCard />
+          </Grid.Col>
+          <Grid.Col span={12} style={{ marginBottom: 20 }}>
+            <LineChartCard />
+          </Grid.Col>
+        </Grid.Row>
       </Spin>
     </PageWrap>
   );

@@ -21,55 +21,62 @@ const useEchart = ({
   options = {},
   onCreateInstance,
   manual = false,
-  isRate = false,
 }: useEchartProps) => {
   const instance = useRef<ECharts>();
   const wrapDom = useRef<HTMLDivElement>(null);
+  const ref = useRef({
+    options: {} as any,
+    isRender: false,
+  });
 
   const resize = () => instance.current?.resize();
 
   const refresh = () => {
-    instance.current?.setOption(isRate ? options : options);
+    instance.current?.setOption({ ...ref.current.options });
+    if (!ref.current.isRender) {
+      setTimeout(() => {
+        ref.current.isRender = true;
+      }, 1000);
+    }
   };
   useEffect(() => {
     if (!wrapDom.current) {
       return;
     }
-    setTimeout(() => {
-      if (!wrapDom.current) {
-        return;
-      }
-      const echartInstance = echarts.init(wrapDom.current) as ECharts;
+    const echartInstance = echarts.init(wrapDom.current) as ECharts;
 
-      if (!manual) {
-        echartInstance.setOption(isRate ? options : options);
-      }
-      instance.current = echartInstance;
-      if (!manual) {
-        refresh();
-      }
-      onCreateInstance?.(echartInstance);
-      window.addEventListener('resize', resize);
-    }, 50);
+    instance.current = echartInstance;
+
+    if (!manual) {
+      ref.current.options = options;
+      refresh();
+    }
+    onCreateInstance?.(echartInstance);
 
     const ro = new ResizeObserver(() => {
-      instance.current?.resize();
+      console.log(`resize`);
+      if (!ref.current.isRender) {
+        return;
+      }
+
+      resize();
     });
     ro.observe(wrapDom.current);
 
     return () => {
-      window.removeEventListener('resize', resize);
       instance.current?.dispose();
       ro.disconnect();
     };
   }, [wrapDom]);
 
   useEffect(() => {
-    if (instance.current && !manual) {
+    console.log('👴useEffect', options.xAxis.data, instance.current);
+
+    if (instance.current) {
+      ref.current.options = { ...options };
       refresh();
     }
-  }, [instance, manual, refresh]);
-
+  }, [options, instance]);
   return {
     wrapDom,
     instance,
