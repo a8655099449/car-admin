@@ -14,6 +14,7 @@
     "ahooks": "^3.7.5",
     "ali-oss": "^6.17.1",
     "axios": "^0.26.0",
+    "countup.js": "^2.6.2",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.7",
     "echarts": "^5.4.2",

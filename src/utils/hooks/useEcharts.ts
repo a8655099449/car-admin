@@ -1,17 +1,9 @@
-/*
- * @Author: hekun hekun@chinasoftinc.com
- * @LastEdit: ximenkun
- * @params:
- * @FilePath: \antae-web\src\utils\useEcharts.ts
- * @Date: 2022-11-15 10:36:19
- * @Descripttion: 公共函数 页面渲染echarts
- */
 import type { ECharts } from 'echarts';
 import * as echarts from 'echarts';
 import { useEffect, useRef } from 'react';
 
 type useEchartProps = {
-  options: any;
+  options: Partial<echarts.EChartsCoreOption>;
   onCreateInstance?: (e: ECharts) => void; // 创建实例的回调
   manual?: boolean; // 是否手动去设置options
   isRate?: boolean; // 是否支持x轴倾斜
@@ -70,8 +62,6 @@ const useEchart = ({
   }, [wrapDom]);
 
   useEffect(() => {
-    console.log('👴useEffect', options.xAxis.data, instance.current);
-
     if (instance.current) {
       ref.current.options = { ...options };
       refresh();

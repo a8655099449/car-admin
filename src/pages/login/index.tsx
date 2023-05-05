@@ -58,13 +58,13 @@ export default function login() {
   return (
     <div className={`${styles['login']}`}>
       <Head>
-        <title> {status == 0 ? '登录' : '注册'} </title>
+        <title> {status === 0 ? '登录' : '注册'} </title>
       </Head>
       <div className={`${styles['login-box']}`}>
         {status === 1 && <Register back={() => setStatus(0)} />}
         {status === 0 && (
           <>
-            <h1>{locale['login.title']}</h1>
+            <h1>登录</h1>
             <Form
               wrapperCol={{ span: 24 }}
               form={form}

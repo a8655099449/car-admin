@@ -7,7 +7,6 @@ import {
   Popconfirm,
   Space,
 } from '@arco-design/web-react';
-import { DeepPartial } from '@arco-design/web-react/es/Form/store';
 import { IconDelete, IconEdit } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
@@ -26,7 +25,7 @@ import {
   TableRequest,
 } from './type';
 // useTableSetting 内置的一些setting操作
-export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer<T>>) {
+export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer>) {
   const cols = useMemo(() => {
     const {
       columns = [],
@@ -255,7 +254,7 @@ export function useTableRequest<T>(
   });
 }
 
-export function useFormDrawer<T>(
+export function useFormDrawer<T = any>(
   props: ProTableProps<T> & {
     run(): void;
   },
@@ -286,7 +285,7 @@ export function useFormDrawer<T>(
   const handleEditRow = (t: T) => {
     ref.current.target = t;
     setFormDrawerShow(true);
-    fromDrawerInstance.setFieldsValue(t as DeepPartial<T>);
+    fromDrawerInstance.setFieldsValue(t as any);
     setMode('edit');
   };
   // todo 删除某行

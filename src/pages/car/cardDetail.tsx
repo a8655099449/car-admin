@@ -1,5 +1,6 @@
 import { Descriptions, Grid, Image, Spin } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
+import dayjs from 'dayjs';
 import React, { useMemo } from 'react';
 
 import LineChartCard from '@/components/base/LineChartCard';
@@ -25,6 +26,7 @@ interface Item {
   landingPrice: number;
   discount: number;
   inventoryTime: string;
+  nakedPrice: number;
 }
 
 const CardDetail = () => {
@@ -39,7 +41,16 @@ const CardDetail = () => {
     }),
   );
 
-  const _data = useMemo(() => data?.data, [data]);
+  const _data = useMemo(() => {
+    return {
+      ...data?.data,
+      items:
+        data?.data?.items?.map((item) => {
+          item.inventoryTime = dayjs(item.inventoryTime).format(`YYYY年MM月`);
+          return item;
+        }) || [],
+    };
+  }, [data]);
   console.log('👴2023-04-29 11:40:52 cardDetail.tsx line:40', _data);
 
   return (
@@ -112,17 +123,32 @@ const CardDetail = () => {
             <LineChartCard
               title="优惠价格走势"
               xData={_data?.items.map((item) => item.inventoryTime)}
-              yData={_data?.items.map((item) => item.discount)}
+              yData={_data?.items.map((item) => item.discount * -1)}
+              areaColor="1, 145, 252"
             />
           </Grid.Col>
           <Grid.Col span={12} style={{ marginBottom: 20 }}>
-            <LineChartCard />
+            <LineChartCard
+              title="销量走势"
+              xData={_data?.items.map((item) => item.inventoryTime)}
+              yData={_data?.items.map((item) => item.saleCount)}
+            />
           </Grid.Col>
           <Grid.Col span={12} style={{ marginBottom: 20 }}>
-            <LineChartCard />
+            <LineChartCard
+              title="裸车价格"
+              xData={_data?.items.map((item) => item.inventoryTime)}
+              yData={_data?.items.map((item) => item.nakedPrice)}
+              areaColor="228, 68, 44"
+            />
           </Grid.Col>
           <Grid.Col span={12} style={{ marginBottom: 20 }}>
-            <LineChartCard />
+            <LineChartCard
+              title="落地价格"
+              xData={_data?.items.map((item) => item.inventoryTime)}
+              yData={_data?.items.map((item) => item.landingPrice)}
+              areaColor="62, 131, 241"
+            />
           </Grid.Col>
         </Grid.Row>
       </Spin>

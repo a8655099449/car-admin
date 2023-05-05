@@ -12,7 +12,7 @@ import { useTableSetting } from './hooks';
 import styles from './index.module.less';
 import { ProTableProps, TableSize } from './type';
 
-type ToolBarProps<T = unknown> = ReturnType<typeof useTableSetting<T>> &
+type ToolBarProps<T = unknown> = ReturnType<typeof useTableSetting> &
   ProTableProps<T> & {
     onRefresh?: () => void;
     tableSize?: TableSize;
