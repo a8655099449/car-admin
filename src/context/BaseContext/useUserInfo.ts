@@ -1,5 +1,5 @@
-import { USER_INFO } from "@/config/localKeys";
-import useStorage from "@/utils/useStorage";
+import { USER_INFO } from '@/config/localKeys';
+import useStorage from '@/utils/useStorage';
 
 export type UserHooks = {
   userInfo: UserInfo;
@@ -7,9 +7,7 @@ export type UserHooks = {
 };
 
 export const userHooks = (): UserHooks => {
-  const [userInfo, setUserInfo] = useStorage<UserInfo>(USER_INFO, {
-
-  });
+  const [userInfo, setUserInfo] = useStorage<UserInfo>(USER_INFO, {});
 
   return { userInfo, setUserInfo };
 };

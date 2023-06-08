@@ -5,6 +5,23 @@ const routes: RouteItem[] = [
     icon: 'IconApps',
   },
   {
+    path: '/message/hotMessage',
+    name: '热点消息',
+    icon: 'IconApps',
+  },
+  {
+    path: '/message/addMessage',
+    name: '发布文章',
+    icon: 'IconApps',
+    hideInMenu: true,
+  },
+  {
+    path: '/message/detail',
+    name: '文章详情',
+    icon: 'IconApps',
+    hideInMenu: true,
+  },
+  {
     path: '/list',
     name: '用户管理',
     icon: 'IconList',

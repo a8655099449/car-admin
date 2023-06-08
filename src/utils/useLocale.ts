@@ -5,7 +5,7 @@ const useLocale = (locale: Locale) => {
 
   const { lang = 'zh-CN' } = setting || {};
 
-  return locale[lang];
+  return locale[lang] as unknown as string;
 };
 
 export default useLocale;

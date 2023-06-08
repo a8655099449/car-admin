@@ -1,18 +1,14 @@
-import { SETTING_KEY } from "@/config/localKeys";
-import useStorage from "@/utils/useStorage";
-import { useEffect, useState } from "react";
+import { generate, getRgbStr } from '@arco-design/color';
+import { useEffect, useState } from 'react';
 
-
-// @ts-ignore
-import { generate, getRgbStr } from "@arco-design/color";
-
+import { SETTING_KEY } from '@/config/localKeys';
+import useStorage from '@/utils/useStorage';
 
 export const setColorVar = (color: string) => {
-  const theme =
-    document.querySelector("body")?.getAttribute("arco-theme") || "light";
+  const theme = document.querySelector('body')?.getAttribute('arco-theme') || 'light';
   const newList = generate(color, {
     list: true,
-    dark: theme === "dark",
+    dark: theme === 'dark',
   });
 
   newList.forEach((l, index) => {
@@ -21,12 +17,11 @@ export const setColorVar = (color: string) => {
   });
 };
 
-
 const defaultSetting: SettingOptions = {
-  themeColor: "#165DFF",
-  lang: "zh-CN",
+  themeColor: '#165DFF',
+  lang: 'zh-CN',
   theme: 'light',
-  collapsed:false
+  collapsed: false,
 };
 
 export type UseSetting = {
@@ -35,22 +30,19 @@ export type UseSetting = {
 };
 
 export const changeTheme = (theme) => {
-  if (theme === "dark") {
-    document.body.setAttribute("arco-theme", "dark");
+  if (theme === 'dark') {
+    document.body.setAttribute('arco-theme', 'dark');
   } else {
-    document.body.removeAttribute("arco-theme");
+    document.body.removeAttribute('arco-theme');
   }
 };
 
 const useSetting = (): UseSetting => {
-  const [setting, _setSetting] = useStorage<SettingOptions>(
-    SETTING_KEY,
-    defaultSetting
-  );
+  const [setting, _setSetting] = useStorage<SettingOptions>(SETTING_KEY, defaultSetting);
 
   useEffect(() => {
     setColorVar(setting.themeColor);
-    changeTheme(setting.theme)
+    changeTheme(setting.theme);
   }, []);
 
   const setSetting = (value: SettingOptions) => {
@@ -61,7 +53,7 @@ const useSetting = (): UseSetting => {
     }
     // 更改主题
     if (theme !== setting.theme) {
-      changeTheme(theme)
+      changeTheme(theme);
     }
     _setSetting(value);
   };

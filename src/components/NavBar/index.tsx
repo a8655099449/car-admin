@@ -1,5 +1,4 @@
-import { getContext } from "@/context/BaseContext";
-import { Dropdown, Menu, Message, Modal, Select } from "@arco-design/web-react";
+import { Dropdown, Menu, Message, Modal, Select } from '@arco-design/web-react';
 import {
   IconExport,
   IconGithub,
@@ -8,37 +7,44 @@ import {
   IconSettings,
   IconSunFill,
   IconUser,
-} from "@arco-design/web-react/icon";
-import React, { FC, ReactElement, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import logo from "../../logo.svg";
-import IconButton from "../IconButton";
-import styles from "./index.module.less";
-import SettingView from "./SettingView";
+} from '@arco-design/web-react/icon';
+import React, { FC, ReactElement, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
-interface IProps {}
-const NavBar: FC<IProps> = (): ReactElement => {
+import { getContext } from '@/context/BaseContext';
+
+import logo from '../../logo.svg';
+import IconButton from '../IconButton';
+import styles from './index.module.less';
+import SettingView from './SettingView';
+
+const NavBar: FC = (): ReactElement => {
   const [settingViewShow, settingSetViewShow] = useState(false);
 
   const { setting, setSetting, userInfo, setUserInfo } = getContext();
   const { theme } = setting;
-  const isDark = theme !== "dark";
-  // console.log('👴2022-02-11 11:37:57 index.tsx line:22',isDark)
+  const isDark = theme !== 'dark';
   const { replace } = useHistory();
   const { pathname } = useLocation();
 
   return (
-    <div className={`${styles["navbar"]}`}>
+    <div className={`${styles['navbar']}`}>
       <SettingView
         visible={settingViewShow}
         onCancel={() => settingSetViewShow(false)}
         onOk={() => settingSetViewShow(false)}
       />
-      <div className={`${styles["logo"]}`}>
-        <img src={logo} alt="" />
-        vite-react-admin
+      <div className={`${styles['logo']}`}>
+        <img
+          src={logo}
+          alt=""
+          style={{
+            margin: 10,
+          }}
+        />
+        百车盘点
       </div>
-      <div className={`${styles["right-bar"]}`}>
+      <div className={`${styles['right-bar']}`}>
         <IconButton
           icon={<IconGithub />}
           className="mr-10"
@@ -48,7 +54,7 @@ const NavBar: FC<IProps> = (): ReactElement => {
         <IconButton
           icon={isDark ? <IconMoonFill /> : <IconSunFill />}
           onClick={(e) => {
-            const theme = !isDark ? "light" : "dark";
+            const theme = !isDark ? 'light' : 'dark';
             setSetting({
               ...setting,
               theme,
@@ -66,14 +72,14 @@ const NavBar: FC<IProps> = (): ReactElement => {
             />
           }
           options={[
-            { label: "中文", value: "zh-CN" },
-            { label: "English", value: "en-US" },
+            { label: '中文', value: 'zh-CN' },
+            { label: 'English', value: 'en-US' },
           ]}
           trigger="hover"
           triggerProps={{
             autoAlignPopupWidth: false,
             autoAlignPopupMinWidth: true,
-            position: "br",
+            position: 'br',
           }}
           value={setting.lang}
           onChange={(e) => {
@@ -81,10 +87,7 @@ const NavBar: FC<IProps> = (): ReactElement => {
           }}
         />
 
-        <IconButton
-          icon={<IconSettings />}
-          onClick={() => settingSetViewShow(true)}
-        />
+        <IconButton icon={<IconSettings />} onClick={() => settingSetViewShow(true)} />
         <Dropdown
           droplist={
             <Menu>
@@ -96,12 +99,12 @@ const NavBar: FC<IProps> = (): ReactElement => {
                 key="logout"
                 onClick={(e) => {
                   Modal.confirm({
-                    title: "退出登录提示",
-                    content: "是否确认退出？",
+                    title: '退出登录提示',
+                    content: '是否确认退出？',
                     onOk() {
                       setUserInfo({});
                       replace(`/login?redirect=${pathname}`);
-                      Message.success("退出登录成功！");
+                      Message.success('退出登录成功！');
                     },
                   });
                 }}

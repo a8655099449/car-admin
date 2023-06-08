@@ -70,7 +70,7 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
       ..._pagination,
       ...(props.pagination as PaginationProps),
     },
-  });
+  } as any);
 
   const tableCols = useTableColumns(tableSetting._columns);
 
@@ -91,7 +91,7 @@ function ProTable<T = unknown>(props: ProTableProps<T>): ReactElement {
 
   return (
     <div className={`${styles['pro-table']}`}>
-      <FormDrawer {...formDrawerProps} />
+      <FormDrawer {...(formDrawerProps as any)} />
       <SearchBar<T>
         {...props}
         onSearch={(e) => {

@@ -11,6 +11,12 @@
     "@arco-design/color": "^0.4.0",
     "@arco-design/web-react": "^2.28.2",
     "@loadable/component": "^5.15.2",
+    "@tiptap/extension-highlight": "^2.0.3",
+    "@tiptap/extension-image": "^2.0.3",
+    "@tiptap/extension-placeholder": "^2.0.3",
+    "@tiptap/extension-typography": "^2.0.3",
+    "@tiptap/react": "^2.0.3",
+    "@tiptap/starter-kit": "^2.0.3",
     "ahooks": "^3.7.5",
     "ali-oss": "^6.17.1",
     "axios": "^0.26.0",
@@ -22,7 +28,8 @@
     "react-color": "^2.19.3",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
-    "react-router-dom": "5.2.0"
+    "react-router-dom": "5.2.0",
+    "vite": "^4.3.9"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
@@ -47,7 +54,6 @@
     "prettier": "^2.5.1",
     "rollup-plugin-visualizer": "^5.5.4",
     "typescript": "^4.4.4",
-    "vite": "^2.7.2",
     "vite-plugin-mock": "^2.9.6"
   }
 }

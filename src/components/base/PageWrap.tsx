@@ -12,13 +12,16 @@ type PageWrapProps = Partial<{
   }[];
   showTitle: boolean;
   headExtra: ReactElement;
-}>;
+}> &
+  React.HTMLAttributes<HTMLDivElement>;
 const PageWrap: FC<PageWrapProps> = ({
   children,
   breadcrumb,
   title,
   showTitle,
   headExtra,
+  style,
+  ...rest
 }): ReactElement => {
   return (
     <div
@@ -28,7 +31,9 @@ const PageWrap: FC<PageWrapProps> = ({
         padding: 10,
         background: 'var(--color-bg-2)',
         minHeight: `calc(100vh - 104px)`,
+        ...style,
       }}
+      {...rest}
     >
       <Head>
         <title>{title}</title>
