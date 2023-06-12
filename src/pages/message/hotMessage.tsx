@@ -1,7 +1,7 @@
 import { Avatar, List } from '@arco-design/web-react';
 import { IconHeart, IconMessage, IconPlus, IconStar } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import PageWrap from '@/components/base/PageWrap';
 import IconButton from '@/components/IconButton';
@@ -18,6 +18,7 @@ interface DataItem {
   likeCount: number;
   username: string;
   desc: string;
+  liked: 1 | 0;
 }
 type HotMessageProps = unknown;
 const HotMessage = () => {
@@ -53,9 +54,18 @@ const HotMessage = () => {
       },
     }),
   );
-  const { push } = useHistory();
+  const handleLike = async (item: DataItem) => {
+    const res = await request({
+      url: '/doc/like',
+      params: {
+        docId: item.id,
+      },
+    });
 
-  console.log('👴2023-06-07 16:03:53 HotMessage.tsx line:41', data);
+    if (res.code === 200) {
+      run();
+    }
+  };
 
   return (
     <PageWrap
@@ -96,16 +106,25 @@ const HotMessage = () => {
             actionLayout="vertical"
             actions={[
               <span key={'5'}>{item.username}</span>,
-              <span key={1}>
+              <span
+                key={1}
+                onClick={() => handleLike(item)}
+                role="button"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleLike(item);
+                  }
+                }}
+                tabIndex={0}
+              >
                 <IconHeart />
-                {83}
+                {item.likeCount}
               </span>,
               <span key={2}>
-                <IconStar />
-                {index}
+                <IconMessage />
+                {0}
               </span>,
             ]}
-            onClick={() => push(`/message/detail?id=${item.id}`)}
           >
             <List.Item.Meta
               avatar={
@@ -116,7 +135,11 @@ const HotMessage = () => {
                   />
                 </Avatar>
               }
-              title={item.title}
+              title={
+                <Link to={`/message/detail?id=${item.id}`}>
+                  <div>{item.title}</div>
+                </Link>
+              }
               description={<div className="text-row-2">{item.desc}</div>}
             />
           </List.Item>

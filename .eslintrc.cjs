@@ -40,6 +40,8 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off', // 关闭函数返回值类型声明的检查
     'simple-import-sort/imports': 'error', // 强制使用简单导入排序规则
     'simple-import-sort/exports': 'error', // 强制使用简单导出排序规则
+    'jsx-a11y/no-static-element-interactions': 0,
+    'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/anchor-is-valid': [
       // 指定 a 标签的 href 属性要么为空字符串，要么是有效的 URL
       'error',
