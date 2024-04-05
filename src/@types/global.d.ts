@@ -14,6 +14,7 @@ type UserInfo = {
   name?: string;
   id?: number;
   email?: string;
+  isAdmin?: 0 | 1;
 };
 type SettingOptions = {
   themeColor: string;

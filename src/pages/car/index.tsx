@@ -44,14 +44,14 @@ const CarPage: FC<CarPageProps> = (): ReactElement => {
             自动匹配标题
           </WaitButton>,
 
-          <Button key={'update'} icon={<IconRefresh />} onClick={batch.open}>
-            批量更新
-          </Button>,
-          <Link to="/car/carAdd" key={'add'}>
-            <Button type="primary" icon={<IconPlus />}>
-              批量添加
-            </Button>
-          </Link>,
+          // <Button key={'update'} icon={<IconRefresh />} onClick={batch.open}>
+          //   批量更新
+          // </Button>,
+          // <Link to="/car/carAdd" key={'add'}>
+          //   <Button type="primary" icon={<IconPlus />}>
+          //     批量添加
+          //   </Button>
+          // </Link>,
         ]}
         searchFormProps={{
           onValuesChange(target) {

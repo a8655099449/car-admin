@@ -22,6 +22,21 @@ const UserList: FC<UserListProps> = (): ReactElement => {
             search: true,
           },
           {
+            title: '是否为管理员',
+            dataIndex: 'isAdmin',
+            options: [
+              {
+                value: 1,
+                label: '是',
+              },
+              {
+                value: 0,
+                label: '否',
+              },
+            ],
+            valueType: 'select',
+          },
+          {
             title: '注册时间',
             dataIndex: 'createTime',
             search: true,

@@ -12,6 +12,7 @@ import { useRequest } from 'ahooks';
 import dayjs from 'dayjs';
 import { useMemo, useRef, useState } from 'react';
 
+import { getContext } from '@/context/BaseContext';
 import { default as ajax } from '@/utils/request';
 import to from '@/utils/to';
 
@@ -26,6 +27,8 @@ import {
 } from './type';
 // useTableSetting 内置的一些setting操作
 export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer>) {
+  const { isAdmin } = getContext().userInfo;
+
   const cols = useMemo(() => {
     const {
       columns = [],
@@ -93,7 +96,7 @@ export function useTableSetting<T>(props: ReturnType<typeof useFormDrawer>) {
       ];
     }
 
-    if (showHandle) {
+    if (showHandle && isAdmin) {
       const fix = _columns.findIndex((item) => item.dataIndex === 'TABLE_HANDLE');
 
       if (fix >= 0) {

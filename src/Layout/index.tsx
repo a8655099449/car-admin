@@ -57,8 +57,12 @@ const BaseLayout = (): ReactElement => {
     const nodes: any[] = [];
     function travel(_routes: RouteItem[], level: number, parentNode: any[] = []) {
       return _routes.map((route) => {
-        const { breadcrumb = true, hideInMenu, auth } = route;
+        const { breadcrumb = true, hideInMenu, path, auth } = route;
         if (hideInMenu) return null;
+
+        if (path === '/list' && !userInfo.isAdmin) {
+          return null;
+        }
 
         if (auth && !auth.some((item) => userInfo.auth?.includes(item))) {
           return null;

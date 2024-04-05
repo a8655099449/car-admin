@@ -7,6 +7,8 @@ import {
 } from '@arco-design/web-react/icon';
 import { FC, ReactElement, ReactNode } from 'react';
 
+import { getContext } from '@/context/BaseContext';
+
 import IconButton from '../IconButton';
 import { useTableSetting } from './hooks';
 import styles from './index.module.less';
@@ -34,6 +36,12 @@ function ToolBar<T>({
   hideToolButtons = [],
   showHandle,
 }: ToolBarProps<T>): ReactElement {
+  const { userInfo } = getContext();
+
+  if (!userInfo.isAdmin) {
+    showHandle = false;
+  }
+
   return (
     <div className={`${styles['toolbar']}`}>
       <div className={`${styles['title']}`}>{title}</div>
